@@ -1,0 +1,6 @@
+@NeverMissLead.API_HostAddress = http://localhost:5238
+
+GET {{NeverMissLead.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

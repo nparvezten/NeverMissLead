@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/API/">
+    <Project Path="API/NeverMissLead.API.csproj" />
+  </Folder>
+  <Folder Name="/Application/">
+    <Project Path="Application/NeverMissLead.Application.csproj" />
+  </Folder>
+  <Folder Name="/Domain/">
+    <Project Path="Domain/NeverMissLead.Domain.csproj" />
+  </Folder>
+  <Folder Name="/Infrastructure/">
+    <Project Path="Infrastructure/NeverMissLead.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="Tests/NeverMissLead.Tests.csproj" />
+  </Folder>
+</Solution>
