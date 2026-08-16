@@ -17,7 +17,7 @@ from dataclasses import dataclass
 import psycopg2
 import psycopg2.extras
 
-from embeddings import IEmbeddingClient
+from embeddings import EmbeddingProvider
 
 
 @dataclass(frozen=True)
@@ -39,7 +39,7 @@ async def embed_and_store_chunks(
     document_id: uuid.UUID,
     business_id: uuid.UUID,
     chunks: list[tuple[str, int]],  # (chunk_text, token_count)
-    embedding_client: IEmbeddingClient,
+    embedding_client: EmbeddingProvider,
 ) -> list[uuid.UUID]:
     """
     Embeds a list of chunks and writes them to ``kb_chunks``.
@@ -80,7 +80,7 @@ async def retrieve_top_k(
     conn_str: str,
     business_id: uuid.UUID,
     question: str,
-    embedding_client: IEmbeddingClient,
+    embedding_client: EmbeddingProvider,
     top_k: int = 4,
 ) -> list[RetrievedChunk]:
     """

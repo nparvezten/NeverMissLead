@@ -17,7 +17,7 @@ from pydantic import BaseModel, Field
 
 from chunking import chunk_text
 from config import settings
-from embeddings import IEmbeddingClient, get_embedding_client
+from embeddings import EmbeddingProvider, get_embedding_provider
 from retrieval import RetrievedChunk, embed_and_store_chunks, retrieve_top_k
 
 
@@ -26,12 +26,14 @@ from retrieval import RetrievedChunk, embed_and_store_chunks, retrieve_top_k
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Initialise the embedding client once at startup."""
-    app.state.embedding_client = get_embedding_client(
-        provider=settings.embedding_provider,
-        api_key=settings.openai_api_key,
-        model=settings.openai_embedding_model,
-    )
+    """
+    Initialise the embedding provider once at startup.
+
+    The provider is selected via the ``EMBEDDING_PROVIDER`` env var
+    (``local`` | ``openai`` | ``gemini`` | ``fake``).
+    Defaults to ``local`` (sentence-transformers, free, no key required).
+    """
+    app.state.embedding_client = get_embedding_provider()
     yield
 
 
@@ -93,7 +95,7 @@ async def embed_document(request: EmbedRequest) -> EmbedResponse:
 
     The ``kb_documents`` row must already exist (created by the .NET API).
     """
-    embedding_client: IEmbeddingClient = app.state.embedding_client
+    embedding_client: EmbeddingProvider = app.state.embedding_client
 
     chunks = chunk_text(request.text, chunk_size=request.chunk_size, overlap=request.overlap)
     if not chunks:
@@ -124,7 +126,7 @@ async def query_chunks(request: QueryRequest) -> QueryResponse:
     An empty result (no chunks found) is valid — the caller should flag
     ``needs_human`` when no relevant chunks are returned.
     """
-    embedding_client: IEmbeddingClient = app.state.embedding_client
+    embedding_client: EmbeddingProvider = app.state.embedding_client
 
     try:
         results: list[RetrievedChunk] = await retrieve_top_k(

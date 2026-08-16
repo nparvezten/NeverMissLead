@@ -1,3 +1,15 @@
+# NeverMissLead RAG Service — production dependencies
+#
+# Embedding provider packages:
+#   sentence-transformers — LocalEmbeddingProvider (default, free, no API key)
+#   openai                — OpenAIEmbeddingProvider (optional, MIT-licensed SDK)
+#   google-generativeai   — GeminiEmbeddingProvider (optional, Apache-2.0-licensed SDK)
+#
+# The openai and google-generativeai packages are safe to include here per
+# AGENTS.md licensing policy: the *SDK* is free; only *calling the hosted API*
+# at runtime is metered. They sit unused in local/demo mode.
+# Switching providers = EMBEDDING_PROVIDER env var change only, zero rebuild.
+
 fastapi==0.115.14
 uvicorn[standard]==0.35.0
 pydantic==2.11.7
@@ -6,3 +18,13 @@ psycopg2-binary==2.9.10
 tiktoken==0.9.0
 httpx==0.28.1
 python-dotenv==1.1.1
+
+# ── Embedding providers ───────────────────────────────────────────────────────
+# Local (default — CPU, no API key, 384 dims, ~90 MB model download on first use)
+sentence-transformers==3.4.1
+
+# OpenAI (optional — text-embedding-3-small, 1536 dims, requires OPENAI_API_KEY)
+openai==1.93.0
+
+# Gemini (optional — text-embedding-004, 768 dims, requires GEMINI_API_KEY)
+google-generativeai==0.8.5
