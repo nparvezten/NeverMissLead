@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -46,8 +46,8 @@ services:
         condition: service_healthy
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/nevermisslead
-      - EMBEDDING_PROVIDER=openai
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - EMBEDDING_PROVIDER=local
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
     ports:
       - "8000:8000"
 

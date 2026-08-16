@@ -15,8 +15,8 @@ internal sealed class KbChunkConfiguration : IEntityTypeConfiguration<KbChunk>
         builder.Property(c => c.ChunkText).IsRequired();
         builder.Property(c => c.TokenCount).IsRequired();
 
-        // The embedding vector(1536) column is added via raw SQL in the migration
-        // (see AddVectorExtensionAndEmbeddingColumn migration).
+        // The embedding vector(384) column is added via raw SQL in the migration
+        // (see FixEmbeddingDimensionTo384 migration).
         // EF Core does not manage it — reads/writes go through the Python RAG service.
     }
 }

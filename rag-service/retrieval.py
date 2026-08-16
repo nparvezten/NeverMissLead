@@ -65,7 +65,7 @@ async def embed_and_store_chunks(
                 chunk_id = uuid.uuid4()
                 cur.execute(
                     """
-                    INSERT INTO kb_chunks (id, document_id, chunk_text, token_count, embedding)
+                    INSERT INTO kb_chunks ("Id", "DocumentId", "ChunkText", "TokenCount", embedding)
                     VALUES (%s, %s, %s, %s, %s::vector)
                     """,
                     (str(chunk_id), str(document_id), text, token_count, _vec_to_pg(embedding)),
@@ -109,12 +109,12 @@ async def retrieve_top_k(
             cur.execute(
                 """
                 SELECT
-                    kc.id,
-                    kc.chunk_text,
+                    kc."Id",
+                    kc."ChunkText",
                     1 - (kc.embedding <=> %s::vector) AS cosine_similarity
                 FROM kb_chunks kc
-                JOIN kb_documents kd ON kd.id = kc.document_id
-                WHERE kd.business_id = %s
+                JOIN kb_documents kd ON kd."Id" = kc."DocumentId"
+                WHERE kd."BusinessId" = %s
                   AND kc.embedding IS NOT NULL
                 ORDER BY kc.embedding <=> %s::vector
                 LIMIT %s

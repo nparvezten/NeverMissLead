@@ -2,7 +2,7 @@ namespace NeverMissLead.Domain.Entities;
 
 /// <summary>
 /// A single text chunk from a <see cref="KbDocument"/>, with its embedding stored
-/// as a <c>vector(1536)</c> column in Postgres (via pgvector). The embedding column
+/// as a <c>vector(384)</c> column in Postgres (via pgvector). The embedding column
 /// is managed via raw SQL / Dapper — EF Core sees it as a <c>byte[]</c> placeholder
 /// but never queries it through LINQ. Cosine-distance retrieval is done in the
 /// Python RAG service.

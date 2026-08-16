@@ -16,7 +16,7 @@ class Settings(BaseSettings):
 
     # PostgreSQL connection (direct access to kb_chunks only — vector table).
     # All other DB access goes through the .NET API.
-    database_url: str = "postgresql://parvezkhan@localhost:5432/nevermisslead"
+    database_url: str = "postgresql://postgres:postgres@localhost:5433/nevermisslead"
 
     # ── Embedding provider ────────────────────────────────────────────────────
     # Provider selection uses the EMBEDDING_PROVIDER env var directly

@@ -7,7 +7,7 @@ namespace NeverMissLead.Infrastructure.Persistence;
 
 /// <summary>
 /// EF Core DbContext for all relational tables.
-/// The <c>kb_chunks.embedding</c> column (pgvector <c>vector(1536)</c>) is
+/// The <c>kb_chunks.embedding</c> column (pgvector <c>vector(384)</c>) is
 /// defined via raw migration SQL and is intentionally excluded from this context —
 /// the RAG service accesses it directly via Dapper + psycopg2.
 /// </summary>
