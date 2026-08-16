@@ -79,6 +79,19 @@ as our other projects (no MediatR v13+, no paid packages).
    before/after eval report to the PR — this is non-negotiable, it's the
    whole point of the eval harness.
 
+### 4. Adding a New AI Provider (Embedding or LLM)
+1. Embeddings: implement the `EmbeddingProvider` base class in
+   `rag-service/embeddings.py`, add it to the provider factory, and add it
+   as an allowed value for `EMBEDDING_PROVIDER`.
+2. LLM: implement `ILlmClient` in `backend/Infrastructure/`, register it in
+   the DI factory keyed off `LLM_PROVIDER`, and never call the vendor SDK
+   directly from anywhere outside that one implementation class.
+3. New providers must ship with a fake/mock usable in tests — PRs adding a
+   provider without a test double will be rejected, since it risks unit
+   tests silently requiring a real API key to pass.
+4. Never commit an API key, sample `.env` with a real key, or log a request/
+   response payload that could contain one.
+
 ---
 
 ## 🧪 Verification & Testing Rules

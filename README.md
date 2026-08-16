@@ -71,6 +71,30 @@ npx ng serve --port 4200 --proxy-config proxy.conf.json
 
 ---
 
+## 💸 Cost Model: Free by Default, Client-Ready by Config
+
+NeverMissLead runs **entirely free out of the box** — `docker compose up`
+uses a local embedding model (`sentence-transformers`, CPU-only, no API key)
+and a stub/local LLM provider, so you can clone, run, and demo the full
+pipeline at zero cost.
+
+When a real deployment needs a hosted model (OpenAI, Claude, or Gemini),
+switch providers via configuration only — no code changes:
+
+```bash
+# .env or environment variables
+EMBEDDING_PROVIDER=openai      # local | openai | gemini
+LLM_PROVIDER=anthropic         # none | ollama | openai | anthropic | gemini
+OPENAI_API_KEY=...
+ANTHROPIC_API_KEY=...
+```
+
+Both providers sit behind interfaces (`EmbeddingProvider` in `rag-service`,
+`ILlmClient` in the backend) — see AGENTS.md's "Multi-Provider AI Strategy"
+for the full design. API keys are never committed to the repo.
+
+---
+
 ## 🔑 Demo Sandbox Data
 
 Pre-seeded on startup for immediate testing:
