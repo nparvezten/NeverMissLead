@@ -22,6 +22,8 @@ Four decoupled pieces, same pattern as our other projects:
 * `rag-service/`: **Python 3.11+ FastAPI** microservice — chunking,
   embeddings, retrieval, and lightweight lead-intent classification.
 * `docker-compose.yml`: one-command orchestration for all services.
+* **[Visual Diagrams & Sequence Flows](docs/diagram/README.md)**: High-resolution SVGs for system architecture, database ERD, ingestion pipeline, chat RAG retrieval, and lead follow-up automation.
+
 
 ---
 

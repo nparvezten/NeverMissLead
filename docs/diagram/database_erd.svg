@@ -1,0 +1,172 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="100%" height="100%">
+  <defs>
+    <style>
+      .title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 800; font-size: 24px; fill: #0f172a; }
+      .subtitle { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; fill: #64748b; }
+      .table-header { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 14px; fill: #ffffff; }
+      .col-name { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; fill: #1e293b; font-weight: 500; }
+      .col-type { font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, monospace; font-size: 11px; fill: #64748b; }
+      .col-key { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 10px; fill: #dc2626; }
+      .rel-text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 10px; fill: #64748b; font-weight: 600; }
+    </style>
+
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+
+    <marker id="dot" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6">
+      <circle cx="5" cy="5" r="3" fill="#64748b"/>
+    </marker>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#64748b" />
+    </marker>
+  </defs>
+
+  <rect width="100%" height="100%" fill="#f8fafc"/>
+  <rect x="20" y="20" width="1160" height="860" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+
+  <!-- Header -->
+  <g transform="translate(50, 55)">
+    <text x="0" y="20" class="title">NeverMissLead — PostgreSQL Entity Relationship Diagram (ERD)</text>
+    <text x="0" y="42" class="subtitle">Complete Data Model per AGENTS.md (EF Core Relational Schema + pgvector Chunks)</text>
+  </g>
+
+  <!-- TABLE 1: businesses -->
+  <g transform="translate(60, 120)" filter="url(#shadow)">
+    <rect width="250" height="150" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+    <rect width="250" height="32" rx="8" fill="#3b82f6"/>
+    <rect y="24" width="250" height="8" fill="#3b82f6"/>
+    <text x="12" y="21" class="table-header">businesses</text>
+    <text x="12" y="52" class="col-name">id</text><text x="120" y="52" class="col-type">uuid</text><text x="215" y="52" class="col-key">PK</text>
+    <text x="12" y="72" class="col-name">name</text><text x="120" y="72" class="col-type">varchar(200)</text>
+    <text x="12" y="92" class="col-name">niche</text><text x="120" y="92" class="col-type">varchar(100)</text>
+    <text x="12" y="112" class="col-name">timezone</text><text x="120" y="112" class="col-type">varchar(50)</text>
+    <text x="12" y="132" class="col-name">created_at</text><text x="120" y="132" class="col-type">timestamptz</text>
+  </g>
+
+  <!-- TABLE 2: business_settings -->
+  <g transform="translate(360, 120)" filter="url(#shadow)">
+    <rect width="250" height="130" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+    <rect width="250" height="32" rx="8" fill="#0ea5e9"/>
+    <rect y="24" width="250" height="8" fill="#0ea5e9"/>
+    <text x="12" y="21" class="table-header">business_settings</text>
+    <text x="12" y="52" class="col-name">business_id</text><text x="120" y="52" class="col-type">uuid</text><text x="200" y="52" class="col-key">PK, FK</text>
+    <text x="12" y="72" class="col-name">widget_greeting</text><text x="120" y="72" class="col-type">varchar(500)</text>
+    <text x="12" y="92" class="col-name">handoff_email</text><text x="120" y="92" class="col-type">varchar(255)</text>
+    <text x="12" y="112" class="col-name">brand_color</text><text x="120" y="112" class="col-type">varchar(7)</text>
+  </g>
+
+  <!-- TABLE 3: kb_documents -->
+  <g transform="translate(60, 320)" filter="url(#shadow)">
+    <rect width="250" height="170" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+    <rect width="250" height="32" rx="8" fill="#6366f1"/>
+    <rect y="24" width="250" height="8" fill="#6366f1"/>
+    <text x="12" y="21" class="table-header">kb_documents</text>
+    <text x="12" y="52" class="col-name">id</text><text x="120" y="52" class="col-type">uuid</text><text x="215" y="52" class="col-key">PK</text>
+    <text x="12" y="72" class="col-name">business_id</text><text x="120" y="72" class="col-type">uuid</text><text x="215" y="72" class="col-key">FK</text>
+    <text x="12" y="92" class="col-name">title</text><text x="120" y="92" class="col-type">varchar(500)</text>
+    <text x="12" y="112" class="col-name">source_type</text><text x="120" y="112" class="col-type">varchar(50)</text>
+    <text x="12" y="132" class="col-name">raw_text</text><text x="120" y="132" class="col-type">text</text>
+    <text x="12" y="152" class="col-name">uploaded_at</text><text x="120" y="152" class="col-type">timestamptz</text>
+  </g>
+
+  <!-- TABLE 4: kb_chunks (pgvector) -->
+  <g transform="translate(360, 320)" filter="url(#shadow)">
+    <rect width="250" height="150" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+    <rect width="250" height="32" rx="8" fill="#10b981"/>
+    <rect y="24" width="250" height="8" fill="#10b981"/>
+    <text x="12" y="21" class="table-header">kb_chunks (pgvector)</text>
+    <text x="12" y="52" class="col-name">id</text><text x="120" y="52" class="col-type">uuid</text><text x="215" y="52" class="col-key">PK</text>
+    <text x="12" y="72" class="col-name">document_id</text><text x="120" y="72" class="col-type">uuid</text><text x="215" y="72" class="col-key">FK</text>
+    <text x="12" y="92" class="col-name">chunk_text</text><text x="120" y="92" class="col-type">text</text>
+    <text x="12" y="112" class="col-name">embedding</text><text x="120" y="112" class="col-type">vector(1536)</text>
+    <text x="12" y="132" class="col-name">token_count</text><text x="120" y="132" class="col-type">int</text>
+  </g>
+
+  <!-- TABLE 5: conversations -->
+  <g transform="translate(660, 120)" filter="url(#shadow)">
+    <rect width="250" height="170" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+    <rect width="250" height="32" rx="8" fill="#8b5cf6"/>
+    <rect y="24" width="250" height="8" fill="#8b5cf6"/>
+    <text x="12" y="21" class="table-header">conversations</text>
+    <text x="12" y="52" class="col-name">id</text><text x="120" y="52" class="col-type">uuid</text><text x="215" y="52" class="col-key">PK</text>
+    <text x="12" y="72" class="col-name">business_id</text><text x="120" y="72" class="col-type">uuid</text><text x="215" y="72" class="col-key">FK</text>
+    <text x="12" y="92" class="col-name">visitor_ref</text><text x="120" y="92" class="col-type">varchar(100)</text>
+    <text x="12" y="112" class="col-name">started_at</text><text x="120" y="112" class="col-type">timestamptz</text>
+    <text x="12" y="132" class="col-name">status</text><text x="120" y="132" class="col-type">varchar(50)</text>
+    <text x="12" y="152" class="col-name">needs_human</text><text x="120" y="152" class="col-type">boolean</text>
+  </g>
+
+  <!-- TABLE 6: messages -->
+  <g transform="translate(660, 340)" filter="url(#shadow)">
+    <rect width="250" height="150" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+    <rect width="250" height="32" rx="8" fill="#ec4899"/>
+    <rect y="24" width="250" height="8" fill="#ec4899"/>
+    <text x="12" y="21" class="table-header">messages</text>
+    <text x="12" y="52" class="col-name">id</text><text x="120" y="52" class="col-type">uuid</text><text x="215" y="52" class="col-key">PK</text>
+    <text x="12" y="72" class="col-name">conversation_id</text><text x="120" y="72" class="col-type">uuid</text><text x="215" y="72" class="col-key">FK</text>
+    <text x="12" y="92" class="col-name">role</text><text x="120" y="92" class="col-type">varchar(20)</text>
+    <text x="12" y="112" class="col-name">content</text><text x="120" y="112" class="col-type">text</text>
+    <text x="12" y="132" class="col-name">cited_chunk_ids</text><text x="120" y="132" class="col-type">uuid[]</text>
+  </g>
+
+  <!-- TABLE 7: leads -->
+  <g transform="translate(60, 560)" filter="url(#shadow)">
+    <rect width="270" height="210" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+    <rect width="270" height="32" rx="8" fill="#f59e0b"/>
+    <rect y="24" width="270" height="8" fill="#f59e0b"/>
+    <text x="12" y="21" class="table-header">leads (AES-256 PII Encrypted)</text>
+    <text x="12" y="52" class="col-name">id</text><text x="135" y="52" class="col-type">uuid</text><text x="235" y="52" class="col-key">PK</text>
+    <text x="12" y="72" class="col-name">conversation_id</text><text x="135" y="72" class="col-type">uuid</text><text x="235" y="72" class="col-key">FK</text>
+    <text x="12" y="92" class="col-name">business_id</text><text x="135" y="92" class="col-type">uuid</text><text x="235" y="92" class="col-key">FK</text>
+    <text x="12" y="112" class="col-name">name_enc</text><text x="135" y="112" class="col-type">varchar(500)</text>
+    <text x="12" y="132" class="col-name">phone_enc</text><text x="135" y="132" class="col-type">varchar(500)</text>
+    <text x="12" y="152" class="col-name">email_enc</text><text x="135" y="152" class="col-type">varchar(500)</text>
+    <text x="12" y="172" class="col-name">qualification_score</text><text x="135" y="172" class="col-type">double</text>
+    <text x="12" y="192" class="col-name">status</text><text x="135" y="192" class="col-type">varchar(50)</text>
+  </g>
+
+  <!-- TABLE 8: follow_up_tasks -->
+  <g transform="translate(420, 560)" filter="url(#shadow)">
+    <rect width="260" height="190" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+    <rect width="260" height="32" rx="8" fill="#ea580c"/>
+    <rect y="24" width="260" height="8" fill="#ea580c"/>
+    <text x="12" y="21" class="table-header">follow_up_tasks</text>
+    <text x="12" y="52" class="col-name">id</text><text x="130" y="52" class="col-type">uuid</text><text x="225" y="52" class="col-key">PK</text>
+    <text x="12" y="72" class="col-name">lead_id</text><text x="130" y="72" class="col-type">uuid</text><text x="225" y="72" class="col-key">FK</text>
+    <text x="12" y="92" class="col-name">scheduled_for</text><text x="130" y="92" class="col-type">timestamptz</text>
+    <text x="12" y="112" class="col-name">channel</text><text x="130" y="112" class="col-type">varchar(50)</text>
+    <text x="12" y="132" class="col-name">message_draft</text><text x="130" y="132" class="col-type">text</text>
+    <text x="12" y="152" class="col-name">status</text><text x="130" y="152" class="col-type">varchar(50)</text>
+    <text x="12" y="172" class="col-name">sent_at</text><text x="130" y="172" class="col-type">timestamptz</text>
+  </g>
+
+  <!-- Relationships Lines -->
+  <!-- 1. businesses -> business_settings (1:1) -->
+  <path d="M 310 170 L 360 170" fill="none" stroke="#64748b" stroke-width="1.5" marker-start="url(#dot)" marker-end="url(#arrow)"/>
+  <text x="320" y="162" class="rel-text">1:1</text>
+
+  <!-- 2. businesses -> kb_documents (1:N) -->
+  <path d="M 180 270 L 180 320" fill="none" stroke="#64748b" stroke-width="1.5" marker-start="url(#dot)" marker-end="url(#arrow)"/>
+  <text x="190" y="295" class="rel-text">1:N</text>
+
+  <!-- 3. kb_documents -> kb_chunks (1:N) -->
+  <path d="M 310 390 L 360 390" fill="none" stroke="#64748b" stroke-width="1.5" marker-start="url(#dot)" marker-end="url(#arrow)"/>
+  <text x="320" y="382" class="rel-text">1:N</text>
+
+  <!-- 4. businesses -> conversations (1:N) -->
+  <path d="M 310 140 L 660 140" fill="none" stroke="#64748b" stroke-width="1.5" marker-start="url(#dot)" marker-end="url(#arrow)"/>
+  <text x="480" y="132" class="rel-text">1:N</text>
+
+  <!-- 5. conversations -> messages (1:N) -->
+  <path d="M 780 290 L 780 340" fill="none" stroke="#64748b" stroke-width="1.5" marker-start="url(#dot)" marker-end="url(#arrow)"/>
+  <text x="790" y="315" class="rel-text">1:N</text>
+
+  <!-- 6. conversations -> leads (1:1) -->
+  <path d="M 780 490 L 780 540 L 250 540 L 250 560" fill="none" stroke="#64748b" stroke-width="1.5" marker-start="url(#dot)" marker-end="url(#arrow)"/>
+  <text x="500" y="532" class="rel-text">1:1</text>
+
+  <!-- 7. leads -> follow_up_tasks (1:N) -->
+  <path d="M 330 630 L 420 630" fill="none" stroke="#64748b" stroke-width="1.5" marker-start="url(#dot)" marker-end="url(#arrow)"/>
+  <text x="360" y="622" class="rel-text">1:N</text>
+</svg>

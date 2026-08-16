@@ -1,0 +1,197 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="100%" height="100%">
+  <defs>
+    <style>
+      .title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 800; font-size: 26px; fill: #0f172a; }
+      .subtitle { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; fill: #64748b; }
+      .box-title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 15px; fill: #1e293b; }
+      .box-desc { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; fill: #475569; }
+      .badge-text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 600; font-size: 11px; }
+      .sec-header { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; }
+      .conn-label { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 11px; fill: #64748b; font-weight: 500; }
+    </style>
+    <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5" />
+      <stop offset="100%" stop-color="#6366f1" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0ea5e9" />
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#059669" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    
+    <filter id="cardShadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.06"/>
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#0f172a" flood-opacity="0.04"/>
+    </filter>
+
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#64748b" />
+    </marker>
+    <marker id="arrow-indigo" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#4f46e5" />
+    </marker>
+    <marker id="arrow-sky" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#0284c7" />
+    </marker>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="100%" height="100%" fill="#f8fafc"/>
+  <rect x="20" y="20" width="1160" height="860" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+
+  <!-- Header -->
+  <g transform="translate(50, 60)">
+    <rect x="0" y="-8" width="8" height="34" rx="4" fill="url(#primaryGrad)" />
+    <text x="20" y="16" class="title">NeverMissLead — High-Level System Architecture</text>
+    <text x="20" y="38" class="subtitle">Multi-Provider RAG Lead Capture Platform (.NET 10 Clean Architecture + Python FastAPI + Postgres pgvector)</text>
+  </g>
+
+  <!-- SECTION 1: CLIENT LAYER -->
+  <g transform="translate(50, 130)">
+    <rect width="1100" height="130" rx="12" fill="#f1f5f9" stroke="#cbd5e1" stroke-dasharray="4,4"/>
+    <text x="20" y="25" class="sec-header" fill="#475569">1. Clients &amp; Presentation Layer (Angular 20+)</text>
+    
+    <!-- Widget Card -->
+    <g transform="translate(40, 40)" filter="url(#cardShadow)">
+      <rect width="480" height="72" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+      <rect x="0" y="0" width="6" height="72" rx="3" fill="url(#primaryGrad)"/>
+      <text x="20" y="28" class="box-title">Embeddable Chat Widget</text>
+      <text x="20" y="48" class="box-desc">Angular Standalone Web Component • Rate-limited visitor chat • Inline lead capture</text>
+      <rect x="360" y="15" width="100" height="20" rx="10" fill="#e0e7ff"/>
+      <text x="372" y="29" class="badge-text" fill="#4338ca">Public / Zero Auth</text>
+    </g>
+
+    <!-- Dashboard Card -->
+    <g transform="translate(580, 40)" filter="url(#cardShadow)">
+      <rect width="480" height="72" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+      <rect x="0" y="0" width="6" height="72" rx="3" fill="url(#accentGrad)"/>
+      <text x="20" y="28" class="box-title">Owner Dashboard</text>
+      <text x="20" y="48" class="box-desc">Angular Signals + TailwindCSS • KB upload, leads review, conversation inspector</text>
+      <rect x="375" y="15" width="85" height="20" rx="10" fill="#e0f2fe"/>
+      <text x="388" y="29" class="badge-text" fill="#0369a1">JWT HttpOnly</text>
+    </g>
+  </g>
+
+  <!-- SECTION 2: BACKEND LAYER (.NET 10) -->
+  <g transform="translate(50, 290)">
+    <rect width="520" height="360" rx="12" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1.5"/>
+    <text x="20" y="25" class="sec-header" fill="#7e22ce">2. .NET 10 Core Web API (Clean Architecture)</text>
+    
+    <!-- API / Middleware -->
+    <g transform="translate(20, 40)" filter="url(#cardShadow)">
+      <rect width="480" height="60" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="16" y="25" class="box-title">Controllers &amp; Middlewares</text>
+      <text x="16" y="45" class="box-desc">/api/v1/ • ProblemDetails (RFC 7807) • Serilog CorrelationId • 30 req/min RateLimit</text>
+    </g>
+
+    <!-- CQRS / Application -->
+    <g transform="translate(20, 115)" filter="url(#cardShadow)">
+      <rect width="480" height="90" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="16" y="24" class="box-title">Application Layer (Native CQRS Mediator)</text>
+      <text x="16" y="44" class="box-desc">• Handlers: CreateBusiness, EmbedDocument, RetrieveChunks</text>
+      <text x="16" y="62" class="box-desc">• FluentValidation pipeline validation on all commands</text>
+      <text x="16" y="80" class="box-desc">• Domain Events: LeadCapturedEvent, HandoffRequestedEvent</text>
+    </g>
+
+    <!-- Infrastructure & Provider Interfaces -->
+    <g transform="translate(20, 220)" filter="url(#cardShadow)">
+      <rect width="480" height="120" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="16" y="24" class="box-title">Infrastructure &amp; Swappable Interfaces</text>
+      <text x="16" y="44" class="box-desc">• EF Core DbContext (8 entities configured)</text>
+      <text x="16" y="62" class="box-desc">• IRagClient (RagHttpClient calling Python FastAPI)</text>
+      <text x="16" y="80" class="box-desc">• ILlmClient (NullLlmClient / Ollama / OpenAI / Anthropic / Gemini)</text>
+      <text x="16" y="98" class="box-desc">• AES-256 PII field encryption (name, phone, email)</text>
+    </g>
+  </g>
+
+  <!-- SECTION 3: PYTHON RAG MICROSERVICE -->
+  <g transform="translate(630, 290)">
+    <rect width="520" height="360" rx="12" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+    <text x="20" y="25" class="sec-header" fill="#15803d">3. Python FastAPI RAG Microservice</text>
+
+    <!-- Endpoints Card -->
+    <g transform="translate(20, 40)" filter="url(#cardShadow)">
+      <rect width="480" height="65" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="16" y="25" class="box-title">FastAPI Service (POST /embed, POST /query)</text>
+      <text x="16" y="45" class="box-desc">Strict tenant isolation: queries always filtered by business_id in SQL</text>
+    </g>
+
+    <!-- Chunking & Pipelines -->
+    <g transform="translate(20, 120)" filter="url(#cardShadow)">
+      <rect width="480" height="65" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="16" y="25" class="box-title">tiktoken Chunking &amp; Postgres Ingestion</text>
+      <text x="16" y="45" class="box-desc">300–500 tokens per chunk with 50-token overlap • Direct vector insertion</text>
+    </g>
+
+    <!-- Swappable Embedding Providers -->
+    <g transform="translate(20, 200)" filter="url(#cardShadow)">
+      <rect width="480" height="140" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="16" y="24" class="box-title">Swappable EmbeddingProvider Factory</text>
+      
+      <rect x="16" y="36" width="448" height="26" rx="4" fill="#dcfce7"/>
+      <text x="24" y="53" class="badge-text" fill="#166534">★ LocalEmbeddingProvider (MiniLM-L6-v2, 384-dim, CPU $0 Default)</text>
+      
+      <rect x="16" y="68" width="448" height="26" rx="4" fill="#f1f5f9"/>
+      <text x="24" y="85" class="badge-text" fill="#475569">OpenAIEmbeddingProvider (text-embedding-3-small, 1536-dim)</text>
+
+      <rect x="16" y="100" width="448" height="26" rx="4" fill="#f1f5f9"/>
+      <text x="24" y="117" class="badge-text" fill="#475569">GeminiEmbeddingProvider (text-embedding-004, 768-dim)</text>
+    </g>
+  </g>
+
+  <!-- SECTION 4: PERSISTENCE & LLM PROVIDERS -->
+  <!-- Database (Bottom Left) -->
+  <g transform="translate(50, 680)">
+    <rect width="520" height="160" rx="12" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+    <text x="20" y="25" class="sec-header" fill="#1d4ed8">4. PostgreSQL 16 + pgvector Storage</text>
+    
+    <g transform="translate(20, 40)" filter="url(#cardShadow)">
+      <rect width="480" height="100" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="16" y="25" class="box-title">Relational Tables (EF Core)</text>
+      <text x="16" y="45" class="box-desc">businesses, business_settings, kb_documents, conversations, messages, leads, follow_up_tasks</text>
+      <text x="16" y="70" class="box-title">Vector Storage (Raw pgvector SQL)</text>
+      <text x="16" y="88" class="box-desc">kb_chunks with vector(1536/384) column • Cosine distance index (&lt;=&gt;)</text>
+    </g>
+  </g>
+
+  <!-- Multi-Provider LLMs (Bottom Right) -->
+  <g transform="translate(630, 680)">
+    <rect width="520" height="160" rx="12" fill="#fffbeb" stroke="#fde68a" stroke-width="1.5"/>
+    <text x="20" y="25" class="sec-header" fill="#b45309">5. Multi-Provider LLM Generation (Config-Driven)</text>
+    
+    <g transform="translate(20, 40)" filter="url(#cardShadow)">
+      <rect width="480" height="100" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="16" y="25" class="box-title">Selected via appsettings / LLM_PROVIDER</text>
+      <text x="16" y="45" class="box-desc">• Default Local: NullLlmClient (Verbatim context $0) or Ollama (Mistral)</text>
+      <text x="16" y="65" class="box-desc">• Hosted Paid: OpenAI (GPT-4o), Anthropic (Claude 3.5), Gemini (Flash)</text>
+      <text x="16" y="85" class="box-desc">• Strict Prompt: Citation required or abstain (needs_human = true)</text>
+    </g>
+  </g>
+
+  <!-- Connectors -->
+  <!-- Client to Backend -->
+  <path d="M 290 202 L 290 290" fill="none" stroke="#4f46e5" stroke-width="2" marker-end="url(#arrow-indigo)"/>
+  <text x="300" y="250" class="conn-label">HTTP /chat</text>
+
+  <!-- Backend to Python RAG -->
+  <path d="M 570 470 L 630 470" fill="none" stroke="#0284c7" stroke-width="2" marker-end="url(#arrow-sky)"/>
+  <text x="575" y="460" class="conn-label">IRagClient</text>
+
+  <!-- Backend to DB -->
+  <path d="M 290 650 L 290 680" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Python RAG to DB (Vector table) -->
+  <path d="M 750 650 L 750 670 L 510 670 L 510 680" fill="none" stroke="#059669" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow)"/>
+  <text x="550" y="665" class="conn-label" fill="#059669">Direct Vector SQL</text>
+
+  <!-- Backend to LLM -->
+  <path d="M 540 650 L 540 665 L 890 665 L 890 680" fill="none" stroke="#d97706" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="760" y="660" class="conn-label" fill="#d97706">ILlmClient</text>
+</svg>
