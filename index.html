@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bright Minds Coaching — Demo Integration</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f1f5f9;
+      color: #1e293b;
+      margin: 0;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+    }
+    h1 {
+      color: #4f46e5;
+      margin-top: 0;
+    }
+    .tag {
+      display: inline-block;
+      padding: 4px 10px;
+      background: #e0e7ff;
+      color: #3730a3;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .code-box {
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 13px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <span class="tag">Embed Demo</span>
+    <h1>NeverMissLead Standalone Widget Demo</h1>
+    <p>This page demonstrates embedding the <strong>NeverMissLead</strong> chat widget into any external website with a single custom HTML element.</p>
+
+    <h3>Embed Code Example:</h3>
+    <div class="code-box">
+&lt;!-- Include Widget Script --&gt;
+&lt;script src="http://localhost:4200/main.js" type="module"&gt;&lt;/script&gt;
+
+&lt;!-- Drop in the Custom Web Component --&gt;
+&lt;nml-chat-widget
+  businessId="a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+  apiBaseUrl="http://localhost:5103"
+  brandColor="#4f46e5"
+  greeting="Hi! How can I help you today?"&gt;
+&lt;/nml-chat-widget&gt;
+    </div>
+
+    <p style="margin-top: 24px; font-size: 14px; color: #64748b;">
+      Click the floating launcher button on the bottom right to start a grounded RAG chat session!
+    </p>
+  </div>
+
+  <!-- Embed Widget Custom Element directly if script is loaded -->
+  <nml-chat-widget
+    businessId="a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+    apiBaseUrl="http://localhost:5103"
+    brandColor="#4f46e5"
+    greeting="Hi! How can I help you today? Ask me about subjects, fees, or demo classes!">
+  </nml-chat-widget>
+</body>
+</html>

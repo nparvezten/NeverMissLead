@@ -1,0 +1,190 @@
+<div class="nml-widget-root" [style.--nml-brand]="brandColor">
+  <!-- Launcher Button -->
+  <button
+    type="button"
+    class="nml-launcher-btn"
+    [class.open]="isOpen()"
+    (click)="toggleWidget()"
+    aria-label="Toggle Support Chat"
+  >
+    @if (!isOpen()) {
+      <svg class="nml-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+      </svg>
+    } @else {
+      <svg class="nml-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+    }
+  </button>
+
+  <!-- Chat Window -->
+  <div class="nml-chat-window" [class.visible]="isOpen()">
+    <!-- Header -->
+    <div class="nml-chat-header">
+      <div class="nml-header-info">
+        <div class="nml-avatar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 15a5 5 0 1 1 5-5 5 5 0 0 1-5 5z" />
+          </svg>
+          <span class="nml-status-dot"></span>
+        </div>
+        <div class="nml-header-text">
+          <div class="nml-title">{{ businessName() }}</div>
+          <div class="nml-subtitle">AI Assistant &bull; Typically replies instantly</div>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="nml-close-btn"
+        (click)="toggleWidget()"
+        aria-label="Close Chat"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Messages Body -->
+    <div #messagesContainer class="nml-chat-messages">
+      @for (msg of messages(); track msg.id) {
+        <div class="nml-message-row" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'">
+          <div class="nml-message-bubble">
+            <div class="nml-message-content">{{ msg.content }}</div>
+
+            @if (msg.citedChunkIds && msg.citedChunkIds.length > 0) {
+              <div class="nml-source-chip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                <span>Based on {{ msg.citedChunkIds.length }} {{ msg.citedChunkIds.length === 1 ? 'source' : 'sources' }}</span>
+              </div>
+            }
+
+            @if (msg.needsHuman) {
+              <div class="nml-handoff-banner">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <span>I'm not certain — I've flagged this for the owner to follow up with you.</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Typing Indicator -->
+      @if (isTyping()) {
+        <div class="nml-message-row assistant">
+          <div class="nml-message-bubble typing-bubble">
+            <div class="nml-typing-dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Inline Contact Capture Card -->
+      @if (showContactForm() && !leadCaptured()) {
+        <div class="nml-contact-card">
+          <div class="nml-card-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+            <span>Get in touch with an instructor</span>
+          </div>
+          <p class="nml-card-subtitle">Leave your details and we'll send you course schedules and batch enrollment info.</p>
+
+          <form (ngSubmit)="submitContact()" class="nml-contact-form">
+            <div class="nml-form-group">
+              <input
+                type="text"
+                placeholder="Your Full Name *"
+                [ngModel]="contactName()"
+                (ngModelChange)="contactName.set($event)"
+                name="contactName"
+                required
+                class="nml-input"
+              />
+            </div>
+
+            <div class="nml-form-group">
+              <input
+                type="email"
+                placeholder="Email Address *"
+                [ngModel]="contactEmail()"
+                (ngModelChange)="contactEmail.set($event)"
+                name="contactEmail"
+                class="nml-input"
+              />
+            </div>
+
+            <div class="nml-form-group">
+              <input
+                type="tel"
+                placeholder="Phone Number (optional)"
+                [ngModel]="contactPhone()"
+                (ngModelChange)="contactPhone.set($event)"
+                name="contactPhone"
+                class="nml-input"
+              />
+            </div>
+
+            @if (contactError()) {
+              <div class="nml-form-error">{{ contactError() }}</div>
+            }
+
+            <button
+              type="submit"
+              [disabled]="isSubmittingContact()"
+              class="nml-submit-btn"
+            >
+              @if (!isSubmittingContact()) {
+                <span>Request Enrollment Info</span>
+              } @else {
+                <span>Submitting...</span>
+              }
+            </button>
+          </form>
+        </div>
+      }
+    </div>
+
+    <!-- Input Footer -->
+    <form (ngSubmit)="sendMessage()" class="nml-chat-footer">
+      <input
+        type="text"
+        placeholder="Ask a question..."
+        [ngModel]="userInput()"
+        (ngModelChange)="userInput.set($event)"
+        name="userInput"
+        [disabled]="isTyping()"
+        autocomplete="off"
+        class="nml-chat-input"
+      />
+      <button
+        type="submit"
+        [disabled]="!userInput().trim() || isTyping()"
+        class="nml-send-btn"
+        aria-label="Send Message"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="22" y1="2" x2="11" y2="13" />
+          <polygon points="22 2 15 22 11 13 2 9 22 2" />
+        </svg>
+      </button>
+    </form>
+
+    <div class="nml-branding">
+      <span>Powered by <strong>NeverMissLead</strong></span>
+    </div>
+  </div>
+</div>

@@ -55,6 +55,18 @@ try
         rl.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
     });
 
+    // ── CORS (allow all for widget in v1) ────────────────────────────────────
+    // TODO Week 4: restrict to registered business origins configured in business_settings
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("WidgetCorsPolicy", policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+    });
+
     // ── Health checks ─────────────────────────────────────────────────────────
     builder.Services.AddHealthChecks()
         .AddDbContextCheck<ApplicationDbContext>("postgres");
@@ -72,6 +84,7 @@ try
     // ── Middleware pipeline ───────────────────────────────────────────────────
     app.UseMiddleware<CorrelationIdMiddleware>();
     app.UseMiddleware<ExceptionMiddleware>();
+    app.UseCors("WidgetCorsPolicy");
     app.UseRateLimiter();
     app.UseRouting();
 

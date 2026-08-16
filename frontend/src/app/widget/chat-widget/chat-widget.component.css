@@ -1,0 +1,421 @@
+:host {
+  display: block;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --nml-brand-default: #6366f1;
+  --nml-brand-active: var(--nml-brand, var(--nml-brand-default));
+  --nml-bg-dark: #0f172a;
+  --nml-card-bg: #ffffff;
+  --nml-text-primary: #1e293b;
+  --nml-text-secondary: #64748b;
+  --nml-border: #e2e8f0;
+  --nml-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --nml-radius: 16px;
+  z-index: 999999;
+}
+
+.nml-widget-root {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999999;
+}
+
+/* ── Floating Launcher Button ─────────────────────────────────────────────── */
+.nml-launcher-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--nml-brand-active);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+}
+
+.nml-launcher-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 14px 20px -3px rgba(0, 0, 0, 0.25);
+}
+
+.nml-launcher-btn:active {
+  transform: scale(0.96);
+}
+
+.nml-icon {
+  width: 28px;
+  height: 28px;
+  transition: transform 0.2s ease;
+}
+
+/* ── Chat Window ──────────────────────────────────────────────────────────── */
+.nml-chat-window {
+  position: absolute;
+  bottom: 76px;
+  right: 0;
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  height: 580px;
+  max-height: calc(100vh - 120px);
+  background-color: #f8fafc;
+  border-radius: var(--nml-radius);
+  box-shadow: var(--nml-shadow);
+  border: 1px solid var(--nml-border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  pointer-events: none;
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nml-chat-window.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: all;
+}
+
+/* ── Header ───────────────────────────────────────────────────────────────── */
+.nml-chat-header {
+  background-color: #ffffff;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--nml-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nml-header-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nml-avatar {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: #ede9fe;
+  color: var(--nml-brand-active);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nml-avatar svg {
+  width: 20px;
+  height: 20px;
+}
+
+.nml-status-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #10b981;
+  border: 2px solid #ffffff;
+}
+
+.nml-title {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--nml-text-primary);
+}
+
+.nml-subtitle {
+  font-size: 12px;
+  color: var(--nml-text-secondary);
+}
+
+.nml-close-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--nml-text-secondary);
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
+}
+
+.nml-close-btn:hover {
+  background-color: #f1f5f9;
+  color: var(--nml-text-primary);
+}
+
+.nml-close-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ── Messages Container ──────────────────────────────────────────────────── */
+.nml-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nml-message-row {
+  display: flex;
+  width: 100%;
+}
+
+.nml-message-row.user {
+  justify-content: flex-end;
+}
+
+.nml-message-row.assistant {
+  justify-content: flex-start;
+}
+
+.nml-message-bubble {
+  max-width: 82%;
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.nml-message-row.user .nml-message-bubble {
+  background-color: var(--nml-brand-active);
+  color: #ffffff;
+  border-bottom-right-radius: 4px;
+}
+
+.nml-message-row.assistant .nml-message-bubble {
+  background-color: #ffffff;
+  color: var(--nml-text-primary);
+  border: 1px solid var(--nml-border);
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Source chip */
+.nml-source-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 3px 8px;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.nml-source-chip svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Handoff Banner */
+.nml-handoff-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 8px 10px;
+  background-color: #fffbeb;
+  border: 1px solid #fef3c7;
+  border-radius: 8px;
+  color: #92400e;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.nml-handoff-banner svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* Typing indicator */
+.typing-bubble {
+  padding: 10px 14px;
+}
+
+.nml-typing-dots {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.nml-typing-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--nml-text-secondary);
+  animation: nmlWave 1.4s infinite ease-in-out both;
+}
+
+.nml-typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+.nml-typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes nmlWave {
+  0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+/* ── Inline Contact Form ─────────────────────────────────────────────────── */
+.nml-contact-card {
+  background-color: #ffffff;
+  border: 1px solid var(--nml-brand-active);
+  border-radius: 12px;
+  padding: 14px;
+  margin: 6px 0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.nml-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--nml-brand-active);
+}
+
+.nml-card-header svg {
+  width: 16px;
+  height: 16px;
+}
+
+.nml-card-subtitle {
+  font-size: 12px;
+  color: var(--nml-text-secondary);
+  margin: 6px 0 10px 0;
+  line-height: 1.3;
+}
+
+.nml-contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nml-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--nml-border);
+  border-radius: 8px;
+  font-size: 13px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+}
+
+.nml-input:focus {
+  border-color: var(--nml-brand-active);
+}
+
+.nml-form-error {
+  font-size: 12px;
+  color: #ef4444;
+  margin-top: -2px;
+}
+
+.nml-submit-btn {
+  background-color: var(--nml-brand-active);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.nml-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+.nml-chat-footer {
+  background-color: #ffffff;
+  padding: 10px 14px;
+  border-top: 1px solid var(--nml-border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nml-chat-input {
+  flex: 1;
+  border: 1px solid var(--nml-border);
+  border-radius: 20px;
+  padding: 9px 14px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.nml-chat-input:focus {
+  border-color: var(--nml-brand-active);
+}
+
+.nml-send-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--nml-brand-active);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.nml-send-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.nml-send-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.nml-branding {
+  background-color: #f8fafc;
+  text-align: center;
+  padding: 4px;
+  font-size: 10px;
+  color: var(--nml-text-secondary);
+}
+
+.nml-branding strong {
+  color: var(--nml-text-primary);
+}
+
+/* ── Mobile responsiveness ───────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .nml-widget-root {
+    bottom: 16px;
+    right: 16px;
+  }
+  .nml-chat-window {
+    width: calc(100vw - 32px);
+    height: calc(100vh - 100px);
+    bottom: 70px;
+  }
+}

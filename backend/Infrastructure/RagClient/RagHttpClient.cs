@@ -62,10 +62,16 @@ public sealed class RagHttpClient : IRagClient
 
     // ── Private DTOs matching the Python response schema ──────────────────────
 
-    private sealed record EmbedResponse(IReadOnlyList<Guid> ChunkIds, int ChunksCreated);
+    private sealed record EmbedResponse(
+        [property: System.Text.Json.Serialization.JsonPropertyName("chunk_ids")] IReadOnlyList<Guid> ChunkIds,
+        [property: System.Text.Json.Serialization.JsonPropertyName("chunks_created")] int ChunksCreated);
 
-    private sealed record QueryResponse(IReadOnlyList<ChunkDto> Chunks);
+    private sealed record QueryResponse(
+        [property: System.Text.Json.Serialization.JsonPropertyName("chunks")] IReadOnlyList<ChunkDto> Chunks);
 
-    private sealed record ChunkDto(Guid ChunkId, string ChunkText, double Score);
+    private sealed record ChunkDto(
+        [property: System.Text.Json.Serialization.JsonPropertyName("chunk_id")] Guid ChunkId,
+        [property: System.Text.Json.Serialization.JsonPropertyName("chunk_text")] string ChunkText,
+        [property: System.Text.Json.Serialization.JsonPropertyName("score")] double Score);
 }
 

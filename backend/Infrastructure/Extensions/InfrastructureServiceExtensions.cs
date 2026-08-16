@@ -35,6 +35,30 @@ public static class InfrastructureServiceExtensions
             client.Timeout = TimeSpan.FromSeconds(30);
         });
 
+        // Security / Encryption service
+        services.AddSingleton<IEncryptionService, Security.AesEncryptionService>();
+
+        // LLM HTTP clients
+        services.AddHttpClient<Ai.OllamaLlmClient>(client =>
+        {
+            var baseUrl = configuration["AiProviders:Ollama:BaseUrl"] ?? "http://localhost:11434";
+            client.BaseAddress = new Uri(baseUrl);
+            client.Timeout = TimeSpan.FromSeconds(60);
+        });
+
+        services.AddHttpClient<Ai.AnthropicLlmClient>(client =>
+        {
+            client.Timeout = TimeSpan.FromSeconds(60);
+        });
+
+        services.AddHttpClient<Ai.GeminiLlmClient>(client =>
+        {
+            client.Timeout = TimeSpan.FromSeconds(60);
+        });
+
+        // ILlmClient registration (runtime factory)
+        services.AddScoped<ILlmClient>(Ai.LlmClientFactory.Create);
+
         return services;
     }
 }
