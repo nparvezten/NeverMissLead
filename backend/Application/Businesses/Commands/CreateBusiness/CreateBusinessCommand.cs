@@ -8,5 +8,6 @@ public sealed record CreateBusinessCommand(
     string Niche,
     string Timezone,
     string HandoffEmail,
-    string? WidgetGreeting,
-    string? BrandColor) : IRequest<Guid>;
+    string? WidgetGreeting = null,
+    string? BrandColor = null,
+    IEnumerable<string>? AllowedOrigins = null) : IRequest<Guid>;

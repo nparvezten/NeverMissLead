@@ -42,7 +42,7 @@ try
 
     builder.Services.AddProblemDetails();
 
-    // ── Rate limiting (widget endpoint — unauthenticated, internet-facing) ─────
+    // ── Rate limiting (widget and auth endpoints — internet-facing) ──────────
     builder.Services.AddRateLimiter(rl =>
     {
         rl.AddFixedWindowLimiter("widget", opt =>
@@ -52,20 +52,68 @@ try
             opt.QueueLimit = 5;
             opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
         });
+
+        // Strict rate limiter for authentication endpoints to prevent brute-force attacks
+        rl.AddFixedWindowLimiter("login", opt =>
+        {
+            opt.Window = TimeSpan.FromMinutes(1);
+            opt.PermitLimit = 5;
+            opt.QueueLimit = 0;
+            opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        });
+
         rl.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
     });
 
-    // ── CORS (allow all for widget in v1) ────────────────────────────────────
-    // TODO Week 4: restrict to registered business origins configured in business_settings
-    builder.Services.AddCors(options =>
+    // ── Authentication & Authorization (JWT via HttpOnly Cookie / Header) ────
+    var jwtSecretKey = builder.Configuration["Jwt:SecretKey"];
+    if (builder.Environment.IsProduction() && (string.IsNullOrEmpty(jwtSecretKey) || jwtSecretKey.Contains("DevSecretKey")))
     {
-        options.AddPolicy("WidgetCorsPolicy", policy =>
+        throw new InvalidOperationException("A cryptographically secure, non-default Jwt:SecretKey must be configured in Production environment.");
+    }
+    jwtSecretKey ??= "NeverMissLead_DevSecretKey_AtLeast32BytesLong_2026!";
+
+    builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false; // Enabled for local dev/testing
+        options.SaveToken = true;
+        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
         {
-            policy.AllowAnyOrigin()
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
-        });
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "NeverMissLead",
+            ValidAudience = builder.Configuration["Jwt:Audience"] ?? "NeverMissLead",
+            IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
+                System.Text.Encoding.UTF8.GetBytes(jwtSecretKey)),
+            ClockSkew = TimeSpan.Zero
+        };
+
+        // Extract JWT from HttpOnly 'nml_token' cookie if not in Authorization header
+        options.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                if (string.IsNullOrEmpty(context.Token) && context.Request.Cookies.TryGetValue("nml_token", out var cookieToken))
+                {
+                    context.Token = cookieToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
     });
+
+    builder.Services.AddAuthorization();
+
+    // ── Dynamic CORS (Per-business allowed origins for widget, frontend for dashboard) ───
+    builder.Services.AddCors();
+    builder.Services.AddSingleton<Microsoft.AspNetCore.Cors.Infrastructure.ICorsPolicyProvider, NeverMissLead.API.Cors.DynamicCorsPolicyProvider>();
 
     // ── Health checks ─────────────────────────────────────────────────────────
     builder.Services.AddHealthChecks()
@@ -84,9 +132,11 @@ try
     // ── Middleware pipeline ───────────────────────────────────────────────────
     app.UseMiddleware<CorrelationIdMiddleware>();
     app.UseMiddleware<ExceptionMiddleware>();
-    app.UseCors("WidgetCorsPolicy");
-    app.UseRateLimiter();
     app.UseRouting();
+    app.UseCors();
+    app.UseRateLimiter();
+    app.UseAuthentication();
+    app.UseAuthorization();
 
     // /health — no auth, no rate limit
     app.MapHealthChecks("/health");

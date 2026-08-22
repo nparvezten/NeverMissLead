@@ -58,6 +58,18 @@ public sealed class ContactCaptureCommandHandler : IRequestHandler<ContactCaptur
             qualificationScore);
 
         _dbContext.Leads.Add(lead);
+
+        // 5. Follow-Up Trigger Rule 1: Schedule 1-hour follow-up nudge for lead
+        var followUpTask = FollowUpTask.ScheduleForLead(
+            lead.Id,
+            lead.BusinessId,
+            lead.CreatedAt.AddHours(1),
+            $"Automated lead follow-up for inquiry on conversation '{request.ConversationId}'",
+            Domain.Enums.FollowUpChannel.Email,
+            request.ConversationId);
+
+        _dbContext.FollowUpTasks.Add(followUpTask);
+
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return lead.Id;

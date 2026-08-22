@@ -58,6 +58,10 @@ namespace NeverMissLead.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("BusinessId")
                         .HasColumnType("uuid");
 
+                    b.PrimitiveCollection<List<string>>("AllowedOrigins")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
                     b.Property<string>("BrandColor")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -69,6 +73,10 @@ namespace NeverMissLead.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(320)
                         .HasColumnType("character varying(320)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<string>("WidgetGreeting")
                         .IsRequired()
@@ -123,12 +131,18 @@ namespace NeverMissLead.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("BusinessId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Channel")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
-                    b.Property<Guid>("LeadId")
+                    b.Property<Guid?>("ConversationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("LeadId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("MessageDraft")
@@ -148,6 +162,11 @@ namespace NeverMissLead.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(20)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BusinessId")
+                        .HasDatabaseName("ix_follow_up_tasks_business_id");
+
+                    b.HasIndex("ConversationId");
 
                     b.HasIndex("LeadId");
 
@@ -317,11 +336,16 @@ namespace NeverMissLead.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("NeverMissLead.Domain.Entities.FollowUpTask", b =>
                 {
+                    b.HasOne("NeverMissLead.Domain.Entities.Conversation", "Conversation")
+                        .WithMany()
+                        .HasForeignKey("ConversationId");
+
                     b.HasOne("NeverMissLead.Domain.Entities.Lead", "Lead")
                         .WithMany("FollowUpTasks")
                         .HasForeignKey("LeadId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Conversation");
 
                     b.Navigation("Lead");
                 });

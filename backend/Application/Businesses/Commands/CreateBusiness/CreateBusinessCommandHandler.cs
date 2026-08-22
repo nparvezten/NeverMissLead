@@ -39,7 +39,8 @@ public sealed class CreateBusinessCommandHandler
             business.Id,
             request.HandoffEmail,
             request.WidgetGreeting ?? "Hi! How can I help you today?",
-            request.BrandColor ?? "#6366f1");
+            request.BrandColor ?? "#6366f1",
+            request.AllowedOrigins);
 
         _db.Businesses.Add(business);
         _db.BusinessSettings.Add(settings);

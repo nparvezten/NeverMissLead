@@ -27,6 +27,13 @@ async def seed_demo():
     with psycopg2.connect(settings.database_url) as conn:
         with conn.cursor() as cur:
             # 1. Clean existing records for this business if any
+            cur.execute('DELETE FROM follow_up_tasks WHERE "BusinessId" = %s;', (str(DEMO_BUSINESS_ID),))
+            cur.execute('DELETE FROM leads WHERE "BusinessId" = %s;', (str(DEMO_BUSINESS_ID),))
+            cur.execute('DELETE FROM messages WHERE "ConversationId" IN (SELECT "Id" FROM conversations WHERE "BusinessId" = %s);', (str(DEMO_BUSINESS_ID),))
+            cur.execute('DELETE FROM conversations WHERE "BusinessId" = %s;', (str(DEMO_BUSINESS_ID),))
+            cur.execute('DELETE FROM kb_chunks WHERE "DocumentId" IN (SELECT "Id" FROM kb_documents WHERE "BusinessId" = %s);', (str(DEMO_BUSINESS_ID),))
+            cur.execute('DELETE FROM kb_documents WHERE "BusinessId" = %s;', (str(DEMO_BUSINESS_ID),))
+            cur.execute('DELETE FROM business_settings WHERE "BusinessId" = %s;', (str(DEMO_BUSINESS_ID),))
             cur.execute('DELETE FROM businesses WHERE "Id" = %s;', (str(DEMO_BUSINESS_ID),))
             
             # 2. Insert Business
@@ -38,17 +45,24 @@ async def seed_demo():
                 (str(DEMO_BUSINESS_ID), "Bright Minds Coaching", "private tutors", "Asia/Kolkata")
             )
 
-            # 3. Insert Business Settings
+            # 3. Insert Business Settings with PBKDF2 Hashed Password
+            import base64, hashlib, os
+            salt = os.urandom(16)
+            subkey = hashlib.pbkdf2_hmac("sha512", b"BrightMinds2026!", salt, 100000, 32)
+            demo_password_hash = f"100000.{base64.b64encode(salt).decode('utf-8')}.{base64.b64encode(subkey).decode('utf-8')}"
+
             cur.execute(
                 """
-                INSERT INTO business_settings ("BusinessId", "WidgetGreeting", "HandoffEmail", "BrandColor")
-                VALUES (%s, %s, %s, %s);
+                INSERT INTO business_settings ("BusinessId", "WidgetGreeting", "HandoffEmail", "BrandColor", "AllowedOrigins", "PasswordHash")
+                VALUES (%s, %s, %s, %s, %s, %s);
                 """,
                 (
                     str(DEMO_BUSINESS_ID),
                     "Hi! I'm the Bright Minds AI assistant. Ask me anything about our subjects, batch timings, trial classes, or fees!",
                     "owner@brightminds.test",
-                    "#4f46e5"
+                    "#4f46e5",
+                    ["http://localhost:4200"],
+                    demo_password_hash
                 )
             )
 

@@ -35,8 +35,14 @@ public static class InfrastructureServiceExtensions
             client.Timeout = TimeSpan.FromSeconds(30);
         });
 
-        // Security / Encryption service
+        // Security / Encryption & Auth services
         services.AddSingleton<IEncryptionService, Security.AesEncryptionService>();
+        services.AddSingleton<IJwtTokenService, Security.JwtTokenService>();
+        services.AddSingleton<IPasswordHashService, Security.PasswordHashService>();
+
+        // TimeProvider & Hosted Services
+        services.AddSingleton(TimeProvider.System);
+        services.AddHostedService<BackgroundServices.FollowUpPollerService>();
 
         // LLM HTTP clients
         services.AddHttpClient<Ai.OllamaLlmClient>(client =>

@@ -12,7 +12,9 @@ internal sealed class FollowUpTaskConfiguration : IEntityTypeConfiguration<Follo
         builder.ToTable("follow_up_tasks");
         builder.HasKey(t => t.Id);
         builder.Property(t => t.Id).ValueGeneratedNever();
-        builder.Property(t => t.LeadId).IsRequired();
+        builder.Property(t => t.BusinessId).IsRequired();
+        builder.Property(t => t.LeadId).IsRequired(false);
+        builder.Property(t => t.ConversationId).IsRequired(false);
         builder.Property(t => t.ScheduledFor).IsRequired();
         builder.Property(t => t.Channel)
             .HasConversion<string>()
@@ -25,8 +27,16 @@ internal sealed class FollowUpTaskConfiguration : IEntityTypeConfiguration<Follo
             .IsRequired();
         builder.Property(t => t.SentAt);
 
+        builder.HasOne(t => t.Lead)
+            .WithMany(l => l.FollowUpTasks)
+            .HasForeignKey(t => t.LeadId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired(false);
+
         // Index for the hosted-service poller query: scheduled_for <= now AND status = 'Pending'
         builder.HasIndex(t => new { t.ScheduledFor, t.Status })
             .HasDatabaseName("ix_follow_up_tasks_scheduled_status");
+        builder.HasIndex(t => t.BusinessId)
+            .HasDatabaseName("ix_follow_up_tasks_business_id");
     }
 }

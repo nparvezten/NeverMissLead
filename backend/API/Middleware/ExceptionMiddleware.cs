@@ -36,6 +36,12 @@ public sealed class ExceptionMiddleware
             await WriteProblemAsync(context, StatusCodes.Status404NotFound,
                 "Not Found", "The requested resource was not found.");
         }
+        catch (UnauthorizedAccessException uex)
+        {
+            Log.Warning(uex, "Unauthorized access attempt for {Path}", context.Request.Path);
+            await WriteProblemAsync(context, StatusCodes.Status401Unauthorized,
+                "Unauthorized", uex.Message);
+        }
         catch (Exception ex)
         {
             Log.Error(ex, "Unhandled exception on {Method} {Path}",

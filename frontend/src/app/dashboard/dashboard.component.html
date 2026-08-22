@@ -1,0 +1,360 @@
+<div class="dashboard-layout">
+  <!-- Top Navigation Bar -->
+  <header class="dash-navbar">
+    <div class="dash-brand">
+      <span class="brand-badge">✦</span>
+      <div>
+        <h1 class="brand-title">NeverMissLead</h1>
+        <span class="business-badge">{{ authService.currentUser()?.businessName || 'Business Owner' }}</span>
+      </div>
+    </div>
+
+    <div class="dash-actions">
+      <a routerLink="/" class="preview-btn" target="_blank" rel="noopener">Preview Widget ↗</a>
+      <button class="refresh-btn" (click)="loadAllData()" title="Refresh Dashboard">🔄 Refresh</button>
+      <div class="user-info">
+        <span class="user-email">{{ authService.currentUser()?.email }}</span>
+        <button class="logout-btn" id="logout-btn" (click)="logout()">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Error Banner -->
+  @if (errorMessage()) {
+    <div class="error-banner">
+      ⚠️ {{ errorMessage() }}
+    </div>
+  }
+
+  <!-- Stats Metric Cards -->
+  <section class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon leads-icon">👥</div>
+      <div class="stat-content">
+        <span class="stat-val" id="stat-total-leads">{{ totalLeads() }}</span>
+        <span class="stat-lbl">Total Leads Captured</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon intent-icon">🎯</div>
+      <div class="stat-content">
+        <span class="stat-val" id="stat-high-intent">{{ highIntentLeads() }}</span>
+        <span class="stat-lbl">High Intent (Score &ge; 60)</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon unanswered-icon">❓</div>
+      <div class="stat-content">
+        <span class="stat-val" id="stat-unanswered">{{ unansweredCount() }}</span>
+        <span class="stat-lbl">Unanswered Questions</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon followups-icon">⏰</div>
+      <div class="stat-content">
+        <span class="stat-val" id="stat-pending-followups">{{ pendingFollowUps() }}</span>
+        <span class="stat-lbl">Pending Follow-Ups</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Navigation Tabs -->
+  <nav class="tabs-nav">
+    <button
+      class="tab-btn"
+      id="tab-leads"
+      [class.active]="activeTab() === 'leads'"
+      (click)="setTab('leads')"
+    >
+      📋 Captured Leads ({{ totalLeads() }})
+    </button>
+    <button
+      class="tab-btn"
+      id="tab-conversations"
+      [class.active]="activeTab() === 'conversations'"
+      (click)="setTab('conversations')"
+    >
+      💬 Conversations & Citations ({{ conversations().length }})
+    </button>
+    <button
+      class="tab-btn"
+      id="tab-unanswered"
+      [class.active]="activeTab() === 'unanswered'"
+      (click)="setTab('unanswered')"
+    >
+      🔍 Unanswered Questions (FAQ Gaps)
+      @if (unansweredCount() > 0) {
+        <span class="badge-count">{{ unansweredCount() }}</span>
+      }
+    </button>
+    <button
+      class="tab-btn"
+      id="tab-followups"
+      [class.active]="activeTab() === 'followups'"
+      (click)="setTab('followups')"
+    >
+      🤖 Follow-Up Automation ({{ followUpTasks().length }})
+    </button>
+  </nav>
+
+  <!-- Main Content Container -->
+  <main class="tab-content">
+    <!-- TAB 1: LEADS TABLE -->
+    @if (activeTab() === 'leads') {
+      <div class="view-panel">
+        <div class="panel-header">
+          <h2>Captured Leads</h2>
+          <p class="panel-desc">All customer contact info decrypted exclusively for you. PII remains AES-256 encrypted at rest.</p>
+        </div>
+
+        @if (leads().length === 0) {
+          <div class="empty-state">
+            <p class="empty-title">No leads captured yet</p>
+            <p class="empty-sub">When visitors request trial classes or pricing in your widget, their details appear here.</p>
+          </div>
+        } @else {
+          <div class="table-responsive">
+            <table class="data-table" id="leads-table">
+              <thead>
+                <tr>
+                  <th>Visitor Name</th>
+                  <th>Contact Details</th>
+                  <th>Intent Summary</th>
+                  <th>Qualification</th>
+                  <th>Status</th>
+                  <th>Captured At</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (lead of leads(); track lead.id) {
+                  <tr class="lead-row">
+                    <td class="name-cell">
+                      <strong>{{ lead.name || 'Anonymous Visitor' }}</strong>
+                    </td>
+                    <td class="contact-cell">
+                      @if (lead.email) {
+                        <div class="contact-item">📧 {{ lead.email }}</div>
+                      }
+                      @if (lead.phone) {
+                        <div class="contact-item">📞 {{ lead.phone }}</div>
+                      }
+                      @if (!lead.email && !lead.phone) {
+                        <span class="text-muted">No contact info</span>
+                      }
+                    </td>
+                    <td class="intent-cell">
+                      <span class="intent-text">{{ lead.intentSummary || 'General inquiry' }}</span>
+                    </td>
+                    <td>
+                      <div class="score-pill" [class.score-high]="lead.qualificationScore >= 80" [class.score-med]="lead.qualificationScore >= 50 && lead.qualificationScore < 80" [class.score-low]="lead.qualificationScore < 50">
+                        {{ lead.qualificationScore }} pts
+                      </div>
+                    </td>
+                    <td>
+                      <select
+                        class="status-select"
+                        [ngModel]="lead.status"
+                        (ngModelChange)="onUpdateLeadStatus(lead, $event)"
+                      >
+                        <option value="New">New</option>
+                        <option value="Contacted">Contacted</option>
+                        <option value="Converted">Converted</option>
+                        <option value="Lost">Lost</option>
+                      </select>
+                    </td>
+                    <td class="date-cell">
+                      {{ lead.createdAt | date:'short' }}
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- TAB 2: CONVERSATION VIEWER WITH CITED CHUNKS -->
+    @if (activeTab() === 'conversations') {
+      <div class="conversations-split-view">
+        <!-- Sessions List -->
+        <div class="conv-sidebar">
+          <div class="sidebar-header">
+            <h3>Sessions</h3>
+          </div>
+          <div class="conv-list">
+            @for (conv of conversations(); track conv.id) {
+              <div
+                class="conv-card"
+                [class.selected]="selectedConversation()?.id === conv.id"
+                (click)="selectConversation(conv.id)"
+              >
+                <div class="conv-card-top">
+                  <span class="visitor-id">Visitor {{ conv.visitorRef.slice(0, 10) }}</span>
+                  <span class="conv-time">{{ conv.startedAt | date:'shortTime' }}</span>
+                </div>
+                <p class="conv-preview">{{ conv.lastMessage || 'No messages' }}</p>
+                <div class="conv-card-bottom">
+                  <span class="msg-count-tag">{{ conv.messageCount }} msgs</span>
+                  @if (conv.needsHuman) {
+                    <span class="handoff-tag">⚠️ Human Needed</span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Chat Thread Viewer -->
+        <div class="conv-thread-panel">
+          @if (isLoadingConversation()) {
+            <div class="loading-state">Loading conversation details...</div>
+          } @else if (selectedConversation(); as conv) {
+            <div class="thread-header">
+              <div>
+                <h3>Session: {{ conv.visitorRef }}</h3>
+                <span class="thread-subtitle">Started: {{ conv.startedAt | date:'medium' }}</span>
+              </div>
+              @if (conv.needsHuman) {
+                <div class="handoff-badge-large">
+                  🚨 Escalation Reason: {{ conv.handoffReason }}
+                </div>
+              }
+            </div>
+
+            <div class="messages-container" id="conversation-messages">
+              @for (msg of conv.messages; track msg.id) {
+                <div class="thread-msg-row" [class.user-row]="msg.role === 'user'" [class.assistant-row]="msg.role === 'assistant'">
+                  <div class="msg-bubble" [class.user-bubble]="msg.role === 'user'" [class.assistant-bubble]="msg.role === 'assistant'">
+                    <div class="msg-header">
+                      <span class="role-tag">{{ msg.role === 'user' ? 'Visitor' : 'AI Assistant' }}</span>
+                      <span class="msg-time">{{ msg.createdAt | date:'shortTime' }}</span>
+                    </div>
+                    <div class="msg-text">{{ msg.content }}</div>
+
+                    <!-- Cited Sources / Chunks Section -->
+                    @if (msg.role === 'assistant' && msg.citedChunkIds.length > 0) {
+                      <div class="citations-box">
+                        <div class="citations-title">
+                          <span>✓ Grounded in {{ msg.citedChunkIds.length }} Knowledge Base chunk(s):</span>
+                        </div>
+                        <div class="citation-uuids">
+                          @for (chunkId of msg.citedChunkIds; track chunkId) {
+                            <code class="chunk-uuid">{{ chunkId }}</code>
+                          }
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="empty-state">Select a conversation from the left to view the thread.</div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- TAB 3: UNANSWERED QUESTIONS (KB GAP DISCOVERY) -->
+    @if (activeTab() === 'unanswered') {
+      <div class="view-panel">
+        <div class="panel-header">
+          <h2>Unanswered Questions (FAQ Knowledge Gaps)</h2>
+          <p class="panel-desc">
+            These are queries where the AI assistant correctly abstained because the information was missing from your uploaded FAQ/pricing documents.
+          </p>
+        </div>
+
+        @if (unansweredQuestions().length === 0) {
+          <div class="empty-state success-empty">
+            <p class="empty-title">🎉 Zero unanswered questions!</p>
+            <p class="empty-sub">Your knowledge base currently answers 100% of incoming visitor questions.</p>
+          </div>
+        } @else {
+          <div class="unanswered-grid" id="unanswered-questions-list">
+            @for (item of unansweredQuestions(); track item.conversationId) {
+              <div class="unanswered-card">
+                <div class="unanswered-top">
+                  <span class="abstain-badge">Abstained / Needs Human</span>
+                  <span class="unanswered-date">{{ item.askedAt | date:'medium' }}</span>
+                </div>
+                <h3 class="unanswered-query">"{{ item.question }}"</h3>
+                <div class="unanswered-meta">
+                  <span>Session: <code>{{ item.visitorRef.slice(0, 12) }}...</code></span>
+                  <span>Reason: <strong>{{ item.handoffReason }}</strong></span>
+                </div>
+                <div class="action-tip">
+                  💡 <strong>Actionable Tip:</strong> Add a Q&A pair addressing this subject in your knowledge base document to automate future responses.
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    <!-- TAB 4: FOLLOW-UP AUTOMATION -->
+    @if (activeTab() === 'followups') {
+      <div class="view-panel">
+        <div class="panel-header">
+          <h2>Automated Follow-Up Tasks</h2>
+          <p class="panel-desc">
+            Background worker (<code>FollowUpPollerService</code>) automatically dispatches lead nudges (1 hr) and owner escalations (4 hrs).
+          </p>
+        </div>
+
+        @if (followUpTasks().length === 0) {
+          <div class="empty-state">
+            <p class="empty-title">No follow-up tasks recorded yet</p>
+            <p class="empty-sub">When leads are captured or handoffs occur, scheduled automation tasks appear here.</p>
+          </div>
+        } @else {
+          <div class="table-responsive">
+            <table class="data-table" id="follow-ups-table">
+              <thead>
+                <tr>
+                  <th>Target Type</th>
+                  <th>Channel</th>
+                  <th>Scheduled For</th>
+                  <th>Status</th>
+                  <th>Message Draft</th>
+                  <th>Sent At</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (task of followUpTasks(); track task.id) {
+                  <tr>
+                    <td>
+                      @if (task.leadId) {
+                        <span class="type-badge lead-type">👤 Lead Follow-Up</span>
+                      } @else if (task.conversationId) {
+                        <span class="type-badge escalation-type">🚨 Owner Escalation</span>
+                      } @else {
+                        <span class="type-badge">General</span>
+                      }
+                    </td>
+                    <td>
+                      <span class="channel-badge">✉️ {{ task.channel }}</span>
+                    </td>
+                    <td>{{ task.scheduledFor | date:'short' }}</td>
+                    <td>
+                      <span class="status-pill" [class.status-sent]="task.status === 'Sent'" [class.status-pending]="task.status === 'Pending'" [class.status-skipped]="task.status === 'Skipped'">
+                        {{ task.status }}
+                      </span>
+                    </td>
+                    <td class="draft-cell">{{ task.messageDraft }}</td>
+                    <td>{{ task.sentAt ? (task.sentAt | date:'short') : '—' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    }
+  </main>
+</div>

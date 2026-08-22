@@ -108,7 +108,20 @@ public sealed class SendMessageCommandHandler : IRequestHandler<SendMessageComma
         // 7. Lead intent classification
         bool leadIntentDetected = DetectLeadIntent(request.VisitorMessage);
 
-        // 8. Save all changes
+        // 8. Follow-Up Trigger Rule 2: Escalation to owner after 4 hours if conversation needs human
+        if (needsHuman)
+        {
+            var escalationTask = FollowUpTask.ScheduleForHandoff(
+                conversation.Id,
+                request.BusinessId,
+                DateTime.UtcNow.AddHours(4),
+                $"Owner Escalation: Conversation '{conversation.Id}' requires human attention. Unanswered question: '{request.VisitorMessage}'",
+                FollowUpChannel.Email);
+
+            _dbContext.FollowUpTasks.Add(escalationTask);
+        }
+
+        // 9. Save all changes
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return new SendMessageResponse(

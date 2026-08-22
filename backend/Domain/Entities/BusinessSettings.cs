@@ -10,6 +10,8 @@ public class BusinessSettings
     public string WidgetGreeting { get; private set; } = "Hi! How can I help you today?";
     public string HandoffEmail { get; private set; } = string.Empty;
     public string BrandColor { get; private set; } = "#6366f1";
+    public List<string> AllowedOrigins { get; private set; } = [];
+    public string? PasswordHash { get; private set; }
 
     // Navigation
     public Business Business { get; private set; } = null!;
@@ -22,16 +24,35 @@ public class BusinessSettings
         Guid businessId,
         string handoffEmail,
         string widgetGreeting = "Hi! How can I help you today?",
-        string brandColor = "#6366f1")
+        string brandColor = "#6366f1",
+        IEnumerable<string>? allowedOrigins = null,
+        string? passwordHash = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(handoffEmail);
 
-        return new BusinessSettings
+        var settings = new BusinessSettings
         {
             BusinessId = businessId,
             HandoffEmail = handoffEmail.Trim(),
             WidgetGreeting = widgetGreeting.Trim(),
-            BrandColor = brandColor.Trim()
+            BrandColor = brandColor.Trim(),
+            AllowedOrigins = allowedOrigins?.Select(o => o.Trim().TrimEnd('/')).Distinct().ToList() ?? ["http://localhost:4200"],
+            PasswordHash = passwordHash
         };
+
+        return settings;
+    }
+
+    /// <summary>Sets the PBKDF2 password hash for owner authentication.</summary>
+    public void SetPasswordHash(string passwordHash)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(passwordHash);
+        PasswordHash = passwordHash.Trim();
+    }
+
+    /// <summary>Updates the allowed CORS origins for the business widget.</summary>
+    public void SetAllowedOrigins(IEnumerable<string> origins)
+    {
+        AllowedOrigins = origins.Select(o => o.Trim().TrimEnd('/')).Distinct().ToList();
     }
 }

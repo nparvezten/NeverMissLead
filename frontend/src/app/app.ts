@@ -1,15 +1,12 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChatWidgetComponent } from './widget/chat-widget/chat-widget.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, ChatWidgetComponent],
+  imports: [CommonModule, RouterModule],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-export class App {
-  title = signal('Bright Minds Coaching');
-  businessId = signal('a1b2c3d4-e5f6-7890-abcd-ef1234567890');
-}
+export class App {}

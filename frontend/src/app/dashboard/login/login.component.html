@@ -1,0 +1,73 @@
+<div class="login-wrapper">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="brand-badge">✦</div>
+      <h2>NeverMissLead</h2>
+      <p class="subtitle">Owner Portal Login</p>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="error-banner" id="login-error-banner">
+        ⚠️ {{ errorMessage() }}
+      </div>
+    }
+
+    <form (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <label for="email">Business Owner Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          [ngModel]="email()"
+          (ngModelChange)="email.set($event)"
+          placeholder="owner@brightminds.test"
+          required
+          autocomplete="username"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          [ngModel]="password()"
+          (ngModelChange)="password.set($event)"
+          placeholder="••••••••"
+          required
+          autocomplete="current-password"
+        />
+      </div>
+
+      <button
+        type="submit"
+        class="submit-btn"
+        id="login-submit-btn"
+        [disabled]="isLoading()"
+      >
+        @if (isLoading()) {
+          <span>Logging in...</span>
+        } @else {
+          <span>Sign In to Dashboard →</span>
+        }
+      </button>
+
+      <div class="demo-helper">
+        <button
+          type="button"
+          class="demo-fill-btn"
+          id="demo-creds-btn"
+          (click)="fillDemoCredentials()"
+        >
+          🔑 Use Demo Credentials (Bright Minds)
+        </button>
+      </div>
+
+      <div class="back-link-wrapper">
+        <a routerLink="/" class="back-link">← Back to Widget Demo</a>
+      </div>
+    </form>
+  </div>
+</div>
