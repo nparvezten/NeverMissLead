@@ -20,9 +20,9 @@ export class LoginComponent {
   errorMessage = signal<string | null>(null);
   isLoading = signal(false);
 
-  fillDemoCredentials() {
-    this.email.set('owner@brightminds.test');
-    this.password.set('BrightMinds2026!');
+  fillDemo(email: string, password: string) {
+    this.email.set(email);
+    this.password.set(password);
     this.errorMessage.set(null);
   }
 

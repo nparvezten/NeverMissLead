@@ -55,14 +55,33 @@
       </button>
 
       <div class="demo-helper">
-        <button
-          type="button"
-          class="demo-fill-btn"
-          id="demo-creds-btn"
-          (click)="fillDemoCredentials()"
-        >
-          🔑 Use Demo Credentials (Bright Minds)
-        </button>
+        <span class="demo-helper-title">Quick Demo Logins:</span>
+        <div class="demo-buttons-grid">
+          <button
+            type="button"
+            class="demo-fill-btn"
+            id="demo-creds-tutoring"
+            (click)="fillDemo('owner@brightminds.test', 'BrightMinds2026!')"
+          >
+            🎓 Bright Minds
+          </button>
+          <button
+            type="button"
+            class="demo-fill-btn"
+            id="demo-creds-dental"
+            (click)="fillDemo('owner@brightsmile.test', 'BrightSmile2026!')"
+          >
+            🦷 Bright Smile
+          </button>
+          <button
+            type="button"
+            class="demo-fill-btn"
+            id="demo-creds-realty"
+            (click)="fillDemo('owner@skylinerealty.test', 'Skyline2026!')"
+          >
+            🏙️ Skyline Realty
+          </button>
+        </div>
       </div>
 
       <div class="back-link-wrapper">
