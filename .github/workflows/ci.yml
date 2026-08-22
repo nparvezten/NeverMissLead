@@ -1,0 +1,164 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend (.NET 10 & xUnit)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore backend/NeverMissLead.slnx
+
+      - name: Build with Warnings-as-Errors
+        run: dotnet build backend/NeverMissLead.slnx --no-restore --warnaserror
+
+      - name: Run xUnit Test Suite
+        run: dotnet test backend/NeverMissLead.slnx --no-build --logger "console;verbosity=normal"
+
+  rag-service:
+    name: RAG Service (Python, Pytest & Bandit SAST)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies & security tools
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install --upgrade pip
+          pip install -r rag-service/requirements.txt
+          pip install pytest pytest-asyncio bandit
+
+      - name: Run Pytest Suite
+        run: |
+          source .venv/bin/activate
+          PYTHONPATH=rag-service pytest rag-service/tests
+
+      - name: Run Bandit SAST Security Audit
+        run: |
+          source .venv/bin/activate
+          bandit -r rag-service/ eval/ -x "rag-service/.venv" -s B101
+
+  frontend:
+    name: Frontend (Angular 20+ Production Build)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install Frontend Dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build Angular Application (Production Bundle)
+        working-directory: frontend
+        run: npm run build
+
+  eval-benchmark:
+    name: End-to-End RAG Benchmark Eval
+    runs-on: ubuntu-latest
+    needs: [backend, rag-service]
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: nevermisslead
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python Environment
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install --upgrade pip
+          pip install -r rag-service/requirements.txt
+          pip install httpx sentence-transformers pyjwt psycopg2-binary
+
+      - name: Start RAG Service (Background)
+        run: |
+          source .venv/bin/activate
+          PYTHONPATH=rag-service uvicorn main:app --host 0.0.0.0 --port 8000 --app-dir rag-service &
+          sleep 3
+
+      - name: Start .NET Web API (Background)
+        env:
+          ConnectionStrings__DefaultConnection: "Host=localhost;Port=5433;Database=nevermisslead;Username=postgres;Password=password"
+          RagService__BaseUrl: "http://localhost:8000"
+          ASPNETCORE_ENVIRONMENT: "Development"
+        run: |
+          dotnet run --project backend/API/NeverMissLead.API.csproj --urls "http://localhost:5103" &
+          sleep 5
+
+      - name: Seed Demo Knowledge Base Chunks
+        env:
+          DB_HOST: "localhost"
+          DB_PORT: "5433"
+          DB_NAME: "nevermisslead"
+          DB_USER: "postgres"
+          DB_PASSWORD: "password"
+        run: |
+          source .venv/bin/activate
+          PYTHONPATH=rag-service python eval/seed_demo_data.py
+
+      - name: Execute RAG Evaluation Benchmark
+        run: |
+          source .venv/bin/activate
+          PYTHONUNBUFFERED=1 python eval/run_eval.py
+
+      - name: Upload Evaluation Report Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rag-evaluation-report
+          path: eval/latest_report.md

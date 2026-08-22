@@ -30,7 +30,7 @@ services:
     environment:
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=nevermisslead;Username=postgres;Password=postgres
       - RagService__BaseUrl=http://rag-service:8000
-      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=5103
     ports:
       - "5103:5103"

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using NeverMissLead.API.Middleware;
 using NeverMissLead.Application.Extensions;
+using NeverMissLead.Application.Interfaces;
 using NeverMissLead.Infrastructure.Extensions;
 using NeverMissLead.Infrastructure.Persistence;
 using Serilog;
@@ -124,12 +125,17 @@ try
 
     var app = builder.Build();
 
-    // ── Auto-migrate on startup (dev convenience; use explicit CLI in prod) ────
+    // ── Auto-migrate & seed demo business on startup ─────────────────────────
     using (var scope = app.Services.CreateScope())
     {
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         await db.Database.MigrateAsync();
         Log.Information("Database migrations applied");
+
+        var passwordHashService = scope.ServiceProvider.GetRequiredService<IPasswordHashService>();
+        var encryptionService = scope.ServiceProvider.GetRequiredService<IEncryptionService>();
+        await DatabaseSeeder.SeedAsync(db, passwordHashService, encryptionService);
+        Log.Information("Demo reference business verified/seeded");
     }
 
     // ── Middleware pipeline ───────────────────────────────────────────────────

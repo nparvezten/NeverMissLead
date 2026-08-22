@@ -26,14 +26,14 @@ public class Business
     private Business() { }
 
     /// <summary>Creates a new business with the required identifying fields.</summary>
-    public static Business Create(string name, string niche, string timezone = "UTC")
+    public static Business Create(string name, string niche, string timezone = "UTC", Guid? id = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
         ArgumentException.ThrowIfNullOrWhiteSpace(niche);
 
         return new Business
         {
-            Id = Guid.NewGuid(),
+            Id = id ?? Guid.NewGuid(),
             Name = name.Trim(),
             Niche = niche.Trim(),
             Timezone = timezone.Trim(),
