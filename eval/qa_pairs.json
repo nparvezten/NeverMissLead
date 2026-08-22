@@ -1,0 +1,146 @@
+[
+  {
+    "id": "q01",
+    "question": "What is the fee for private 1-on-1 tutoring sessions?",
+    "type": "answerable",
+    "topic": "pricing",
+    "expected_keywords": ["65", "1-on-1", "hour"],
+    "notes": "Direct answer from Section 3 ($65 per hour)"
+  },
+  {
+    "id": "q02",
+    "question": "How much do group classes cost and what is the maximum class size?",
+    "type": "answerable",
+    "topic": "pricing_and_batch_size",
+    "expected_keywords": ["35", "6 students", "280"],
+    "notes": "Direct answer from Section 3 ($35/hr, max 6 students)"
+  },
+  {
+    "id": "q03",
+    "question": "Do you offer a free trial class before enrolling?",
+    "type": "answerable",
+    "topic": "trial_policy",
+    "expected_keywords": ["free", "45", "trial"],
+    "notes": "Direct answer from Section 5 (100% free 45-minute trial session)"
+  },
+  {
+    "id": "q04",
+    "question": "What grades and subjects do you teach?",
+    "type": "answerable",
+    "topic": "subjects_and_grades",
+    "expected_keywords": ["8 to 12", "Mathematics", "Physics", "Chemistry", "Computer Science"],
+    "notes": "Direct answer from Section 1 & 2"
+  },
+  {
+    "id": "q05",
+    "question": "Where is your in-person coaching center located?",
+    "type": "answerable",
+    "topic": "location",
+    "expected_keywords": ["Indiranagar", "Bangalore"],
+    "notes": "Direct answer from Section 6"
+  },
+  {
+    "id": "q06",
+    "question": "What are the timings for weekday batches?",
+    "type": "answerable",
+    "topic": "batch_timings",
+    "expected_keywords": ["4:30", "6:00", "6:30", "8:00"],
+    "notes": "Direct answer from Section 4"
+  },
+  {
+    "id": "q07",
+    "question": "How much is the 4-week exam crash course?",
+    "type": "answerable",
+    "topic": "pricing",
+    "expected_keywords": ["450", "16 hours"],
+    "notes": "Direct answer from Section 3"
+  },
+  {
+    "id": "q08",
+    "question": "What qualifications and experience do the instructors have?",
+    "type": "answerable",
+    "topic": "tutor_experience",
+    "expected_keywords": ["5+", "years", "STEM"],
+    "notes": "Direct answer from Section 1"
+  },
+  {
+    "id": "q09",
+    "question": "How much advance notice is required to reschedule a 1-on-1 class?",
+    "type": "answerable",
+    "topic": "rescheduling_policy",
+    "expected_keywords": ["24", "hour", "reschedule"],
+    "notes": "Direct answer from Section 7"
+  },
+  {
+    "id": "q10",
+    "question": "Is there a registration or assessment fee when joining?",
+    "type": "answerable",
+    "topic": "fees",
+    "expected_keywords": ["25", "registration", "diagnostic"],
+    "notes": "Direct answer from Section 3"
+  },
+  {
+    "id": "q11",
+    "question": "How are online sessions conducted?",
+    "type": "answerable",
+    "topic": "delivery_mode",
+    "expected_keywords": ["Google Meet", "Zoom", "whiteboard", "replay"],
+    "notes": "Direct answer from Section 6"
+  },
+  {
+    "id": "q12",
+    "question": "What are the weekend batch hours?",
+    "type": "answerable",
+    "topic": "batch_timings",
+    "expected_keywords": ["Saturday", "Sunday", "9:30", "11:30"],
+    "notes": "Direct answer from Section 4"
+  },
+  {
+    "id": "q13",
+    "question": "Do you offer Grade 11 Biology or Medical NEET coaching?",
+    "type": "should_abstain",
+    "topic": "out_of_scope_subject",
+    "expected_keywords": [],
+    "notes": "Near-miss: coaching covers Math, Physics, Chem, CS — not Biology/NEET"
+  },
+  {
+    "id": "q14",
+    "question": "Can I prepare for the GRE or GMAT exam with your tutors?",
+    "type": "should_abstain",
+    "topic": "out_of_scope_exam",
+    "expected_keywords": [],
+    "notes": "Near-miss: focus is on Grades 8-12, AP, and SAT"
+  },
+  {
+    "id": "q15",
+    "question": "Do you have a coaching branch located in Whitefield or Koramangala?",
+    "type": "should_abstain",
+    "topic": "unsupported_location",
+    "expected_keywords": [],
+    "notes": "Near-miss: physical center is only in Indiranagar"
+  },
+  {
+    "id": "q16",
+    "question": "Is there a family discount or sibling discount if two kids enroll together?",
+    "type": "should_abstain",
+    "topic": "unstated_discount_policy",
+    "expected_keywords": [],
+    "notes": "Plausible pricing question not documented in FAQ — must abstain"
+  },
+  {
+    "id": "q17",
+    "question": "Do you provide French, Spanish, or foreign language classes for high schoolers?",
+    "type": "should_abstain",
+    "topic": "out_of_scope_subject",
+    "expected_keywords": [],
+    "notes": "Genuinely out of scope subject"
+  },
+  {
+    "id": "q18",
+    "question": "Do you offer full money-back guarantees after attending 2 months of classes?",
+    "type": "should_abstain",
+    "topic": "unsupported_refund_claim",
+    "expected_keywords": [],
+    "notes": "Near-miss: policy specifies 7 days notice before next billing cycle"
+  }
+]

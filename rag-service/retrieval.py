@@ -59,7 +59,8 @@ async def embed_and_store_chunks(
 
     chunk_ids: list[uuid.UUID] = []
 
-    with psycopg2.connect(conn_str) as conn:
+    conn = psycopg2.connect(conn_str)
+    try:
         with conn.cursor() as cur:
             for (text, token_count), embedding in zip(chunks, embeddings):
                 chunk_id = uuid.uuid4()
@@ -72,6 +73,8 @@ async def embed_and_store_chunks(
                 )
                 chunk_ids.append(chunk_id)
         conn.commit()
+    finally:
+        conn.close()
 
     return chunk_ids
 
@@ -103,7 +106,8 @@ async def retrieve_top_k(
 
     results: list[RetrievedChunk] = []
 
-    with psycopg2.connect(conn_str) as conn:
+    conn = psycopg2.connect(conn_str)
+    try:
         psycopg2.extras.register_uuid(conn)
         with conn.cursor() as cur:
             cur.execute(
@@ -134,5 +138,7 @@ async def retrieve_top_k(
                         score=float(row[2]),
                     )
                 )
+    finally:
+        conn.close()
 
     return results

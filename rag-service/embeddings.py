@@ -216,8 +216,8 @@ class FakeEmbeddingClient(EmbeddingProvider):
 
         results: list[list[float]] = []
         for text in texts:
-            seed = int(hashlib.md5(text.encode()).hexdigest(), 16)
-            rng = random.Random(seed)
+            seed = int(hashlib.sha256(text.encode()).hexdigest(), 16) % (2**32)
+            rng = random.Random(seed)  # nosec B311 — deterministic test double, not for cryptographic keys
             vec = [rng.gauss(0, 1) for _ in range(self.DIMENSIONS)]
             norm = sum(x * x for x in vec) ** 0.5
             results.append([x / norm for x in vec])

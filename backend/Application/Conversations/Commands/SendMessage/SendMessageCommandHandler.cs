@@ -67,7 +67,7 @@ public sealed class SendMessageCommandHandler : IRequestHandler<SendMessageComma
 
         // 4. Retrieve candidate chunks from RAG service
         var candidateChunks = await _ragClient.QueryAsync(request.BusinessId, request.VisitorMessage, topK: 4, cancellationToken);
-        var chunks = candidateChunks?.Where(c => c.Score >= 0.55).ToList() ?? [];
+        var chunks = candidateChunks?.Where(c => c.Score >= 0.25).ToList() ?? [];
 
         string assistantMessageText;
         IReadOnlyList<Guid> citedChunkIds = [];

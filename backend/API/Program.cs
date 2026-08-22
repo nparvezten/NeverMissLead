@@ -45,11 +45,14 @@ try
     // ── Rate limiting (widget and auth endpoints — internet-facing) ──────────
     builder.Services.AddRateLimiter(rl =>
     {
+        var widgetPermitLimit = builder.Configuration.GetValue<int?>("RateLimiting:WidgetPermitLimit")
+            ?? (builder.Environment.IsDevelopment() ? 200 : 30);
+
         rl.AddFixedWindowLimiter("widget", opt =>
         {
             opt.Window = TimeSpan.FromMinutes(1);
-            opt.PermitLimit = 30;
-            opt.QueueLimit = 5;
+            opt.PermitLimit = widgetPermitLimit;
+            opt.QueueLimit = 10;
             opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
         });
 

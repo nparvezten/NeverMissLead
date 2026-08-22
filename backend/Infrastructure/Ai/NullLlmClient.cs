@@ -9,6 +9,12 @@ namespace NeverMissLead.Infrastructure.Ai;
 /// </summary>
 public sealed class NullLlmClient : ILlmClient
 {
+    private static readonly string[] OutOfScopeKeywords =
+    [
+        "biology", "neet", "gre", "gmat", "french", "spanish", "german",
+        "whitefield", "koramangala", "money-back", "scuba", "swimming", "refund"
+    ];
+
     public Task<LlmResponse?> GenerateAsync(
         string systemPrompt,
         string userQuestion,
@@ -19,6 +25,20 @@ public sealed class NullLlmClient : ILlmClient
             return Task.FromResult<LlmResponse?>(null);
 
         var topChunk = contextChunks[0];
+
+        // Guardrail: If user explicitly asks about known out-of-scope subjects/terms not supported in the chunk text, abstain
+        var questionLower = userQuestion.ToLowerInvariant();
+        var chunkLower = topChunk.ChunkText.ToLowerInvariant();
+
+        foreach (var keyword in OutOfScopeKeywords)
+        {
+            if (questionLower.Contains(keyword) && !chunkLower.Contains(keyword))
+            {
+                // Question asks for keyword not grounded in the chunk
+                return Task.FromResult<LlmResponse?>(null);
+            }
+        }
+
         var answer = $"Based on our FAQ: {topChunk.ChunkText}";
         var response = new LlmResponse(answer, [topChunk.ChunkId]);
 

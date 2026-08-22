@@ -84,10 +84,16 @@ async def seed_demo():
 
     print("Business and Document created in Postgres.")
 
-    # 5. Chunk and Embed with LocalEmbeddingProvider
-    chunks = chunk_text(faq_text, chunk_size=400, overlap=50)
-    chunk_tuples = [(c.text, c.token_count) for c in chunks]
-    print(f"Document produced {len(chunk_tuples)} chunks.")
+    # 5. Chunk and Embed with LocalEmbeddingProvider by section
+    import re
+    raw_sections = [s.strip() for s in re.split(r"\n(?=##\s)", faq_text) if s.strip()]
+    chunk_tuples = []
+    for sec in raw_sections:
+        if not sec.startswith("## "):
+            continue
+        content = f"Bright Minds Coaching — {sec}"
+        chunk_tuples.append((content, len(content.split())))
+    print(f"Document produced {len(chunk_tuples)} topic chunks.")
 
     provider = get_embedding_provider()
     chunk_ids = await embed_and_store_chunks(
