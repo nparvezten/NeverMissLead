@@ -1,3 +1,4 @@
+using FluentValidation.TestHelper;
 using Microsoft.EntityFrameworkCore;
 using NeverMissLead.Application.Conversations.Queries.GetConversationDetails;
 using NeverMissLead.Application.Conversations.Queries.GetConversations;
@@ -11,6 +12,8 @@ using NeverMissLead.Domain.Enums;
 using NeverMissLead.Infrastructure.Persistence;
 using NSubstitute;
 using Shouldly;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Xunit;
 
 namespace NeverMissLead.Tests.Dashboard;
@@ -214,6 +217,46 @@ public sealed class DashboardQueriesTests : IDisposable
                 new UpdateLeadStatusCommand(_leadAId, _businessBId, LeadStatus.Converted),
                 CancellationToken.None));
     }
+
+    [Theory]
+    [InlineData("Contacted", LeadStatus.Contacted)]
+    [InlineData("Converted", LeadStatus.Converted)]
+    [InlineData("Lost", LeadStatus.Lost)]
+    [InlineData("New", LeadStatus.New)]
+    public void StatusString_DeserializesToLeadStatusEnum_WithJsonStringEnumConverter(string statusStr, LeadStatus expectedEnum)
+    {
+        // Arrange
+        var json = $"{{\"status\": \"{statusStr}\"}}";
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        options.Converters.Add(new JsonStringEnumConverter());
+
+        // Act
+        var result = JsonSerializer.Deserialize<StatusHolder>(json, options);
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.Status.ShouldBe(expectedEnum);
+    }
+
+    [Fact]
+    public void UpdateLeadStatusCommandValidator_ValidatesProperly()
+    {
+        // Arrange
+        var validator = new UpdateLeadStatusCommandValidator();
+
+        // Valid
+        var validCommand = new UpdateLeadStatusCommand(_leadAId, _businessAId, LeadStatus.Converted);
+        validator.TestValidate(validCommand).ShouldNotHaveAnyValidationErrors();
+
+        // Invalid empty GUIDs
+        var invalidCommand = new UpdateLeadStatusCommand(Guid.Empty, Guid.Empty, (LeadStatus)999);
+        var result = validator.TestValidate(invalidCommand);
+        result.ShouldHaveValidationErrorFor(x => x.LeadId);
+        result.ShouldHaveValidationErrorFor(x => x.BusinessId);
+        result.ShouldHaveValidationErrorFor(x => x.NewStatus);
+    }
+
+    private sealed record StatusHolder(LeadStatus Status);
 
     public void Dispose() => _db.Dispose();
 }

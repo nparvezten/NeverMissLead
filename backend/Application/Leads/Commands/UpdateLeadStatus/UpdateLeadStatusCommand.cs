@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using NeverMissLead.Application.Common.Mediator;
 using NeverMissLead.Application.Interfaces;
@@ -9,6 +10,16 @@ public sealed record UpdateLeadStatusCommand(
     Guid LeadId,
     Guid BusinessId,
     LeadStatus NewStatus) : IRequest<bool>;
+
+public sealed class UpdateLeadStatusCommandValidator : AbstractValidator<UpdateLeadStatusCommand>
+{
+    public UpdateLeadStatusCommandValidator()
+    {
+        RuleFor(x => x.LeadId).NotEmpty().WithMessage("Lead ID must not be empty.");
+        RuleFor(x => x.BusinessId).NotEmpty().WithMessage("Business ID must not be empty.");
+        RuleFor(x => x.NewStatus).IsInEnum().WithMessage("A valid lead status must be provided.");
+    }
+}
 
 public sealed class UpdateLeadStatusCommandHandler : IRequestHandler<UpdateLeadStatusCommand, bool>
 {

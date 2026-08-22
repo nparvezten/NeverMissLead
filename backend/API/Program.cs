@@ -7,6 +7,7 @@ using NeverMissLead.Application.Interfaces;
 using NeverMissLead.Infrastructure.Extensions;
 using NeverMissLead.Infrastructure.Persistence;
 using Serilog;
+using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 
 // ── Bootstrap Serilog before the host builds ──────────────────────────────────
@@ -35,6 +36,10 @@ try
 
     // ── Controllers + RFC7807 ProblemDetails ──────────────────────────────────
     builder.Services.AddControllers()
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        })
         .ConfigureApiBehaviorOptions(options =>
         {
             // Use our global exception middleware for unhandled errors
