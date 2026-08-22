@@ -1,0 +1,107 @@
+[
+  {
+    "id": "realty-01",
+    "type": "answerable",
+    "topic": "commission",
+    "question": "What is your standard commission fee for selling a residential home?",
+    "expected_keywords": ["5%", "2.5%", "commission"]
+  },
+  {
+    "id": "realty-02",
+    "type": "answerable",
+    "topic": "services",
+    "question": "Do buyer clients have to pay agent commission out of pocket?",
+    "expected_keywords": ["seller", "closing proceeds", "zero", "buyer"]
+  },
+  {
+    "id": "realty-03",
+    "type": "answerable",
+    "topic": "service_areas",
+    "question": "Which neighborhoods and areas do you cover?",
+    "expected_keywords": ["Downtown", "Waterfront", "North Bay", "Eastridge", "35-mile"]
+  },
+  {
+    "id": "realty-04",
+    "type": "answerable",
+    "topic": "tours",
+    "question": "How much advance notice is required to schedule a private property viewing?",
+    "expected_keywords": ["24 hours", "advance notice"]
+  },
+  {
+    "id": "realty-05",
+    "type": "answerable",
+    "topic": "timeline",
+    "question": "How long does it typically take from an accepted offer to closing?",
+    "expected_keywords": ["30 to 45", "days", "closing"]
+  },
+  {
+    "id": "realty-06",
+    "type": "answerable",
+    "topic": "documents",
+    "question": "What documents are required when submitting a purchase offer?",
+    "expected_keywords": ["pre-approval", "proof of funds", "identification", "photo ID"]
+  },
+  {
+    "id": "realty-07",
+    "type": "answerable",
+    "topic": "pricing",
+    "question": "How much does a home valuation or comparative market analysis cost?",
+    "expected_keywords": ["complimentary", "CMA", "free", "no-obligation"]
+  },
+  {
+    "id": "realty-08",
+    "type": "answerable",
+    "topic": "rentals",
+    "question": "What is your fee structure for rental tenant placement services?",
+    "expected_keywords": ["one month", "rent", "placement"]
+  },
+  {
+    "id": "realty-09",
+    "type": "answerable",
+    "topic": "tours",
+    "question": "When are open houses held for your active listings?",
+    "expected_keywords": ["Saturday", "Sunday", "1:00 PM", "4:00 PM"]
+  },
+  {
+    "id": "realty-10",
+    "type": "answerable",
+    "topic": "policy",
+    "question": "What is your listing agreement duration and cancellation policy?",
+    "expected_keywords": ["90 days", "7 days", "guarantee"]
+  },
+  {
+    "id": "realty-11",
+    "type": "should_abstain",
+    "topic": "out_of_domain",
+    "question": "Do you provide veterinary surgery for pet animals?",
+    "expected_keywords": []
+  },
+  {
+    "id": "realty-12",
+    "type": "should_abstain",
+    "topic": "cross_tenant",
+    "question": "Do you accept Delta Dental insurance for teeth cleaning?",
+    "expected_keywords": []
+  },
+  {
+    "id": "realty-13",
+    "type": "should_abstain",
+    "topic": "cross_tenant",
+    "question": "What is your hourly rate for AP Physics tutoring?",
+    "expected_keywords": []
+  },
+  {
+    "id": "realty-14",
+    "type": "should_abstain",
+    "topic": "out_of_domain",
+    "question": "Can I hire your team to cater my wedding reception?",
+    "expected_keywords": []
+  },
+  {
+    "id": "realty-15",
+    "type": "should_abstain",
+    "topic": "out_of_domain",
+    "question": "Do you manage maritime freight shipping containers?",
+    "expected_keywords": []
+  }
+]

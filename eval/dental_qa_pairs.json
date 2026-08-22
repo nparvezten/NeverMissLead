@@ -1,0 +1,107 @@
+[
+  {
+    "id": "dental-01",
+    "type": "answerable",
+    "topic": "pricing",
+    "question": "How much is a routine dental cleaning and examination?",
+    "expected_keywords": ["120", "cleaning"]
+  },
+  {
+    "id": "dental-02",
+    "type": "answerable",
+    "topic": "services",
+    "question": "Do you offer Invisalign clear aligners?",
+    "expected_keywords": ["Invisalign", "3,800", "aligners"]
+  },
+  {
+    "id": "dental-03",
+    "type": "answerable",
+    "topic": "pricing",
+    "question": "What is the cost for in-office teeth whitening?",
+    "expected_keywords": ["350", "whitening", "laser"]
+  },
+  {
+    "id": "dental-04",
+    "type": "answerable",
+    "topic": "insurance",
+    "question": "Do you accept Delta Dental and Cigna insurance?",
+    "expected_keywords": ["Delta Dental", "Cigna", "in-network"]
+  },
+  {
+    "id": "dental-05",
+    "type": "answerable",
+    "topic": "hours",
+    "question": "Are you open on Saturdays?",
+    "expected_keywords": ["Saturday", "9:00 AM", "2:00 PM"]
+  },
+  {
+    "id": "dental-06",
+    "type": "answerable",
+    "topic": "emergencies",
+    "question": "What should I do if I have a severe tooth emergency after hours?",
+    "expected_keywords": ["emergency", "press 1", "on-call"]
+  },
+  {
+    "id": "dental-07",
+    "type": "answerable",
+    "topic": "policy",
+    "question": "What is your appointment cancellation policy?",
+    "expected_keywords": ["24 hours", "50", "fee"]
+  },
+  {
+    "id": "dental-08",
+    "type": "answerable",
+    "topic": "pricing",
+    "question": "How much do composite tooth fillings cost?",
+    "expected_keywords": ["180", "250", "filling"]
+  },
+  {
+    "id": "dental-09",
+    "type": "answerable",
+    "topic": "financing",
+    "question": "Do you offer financing options for uninsured patients?",
+    "expected_keywords": ["CareCredit", "LendingClub", "Savings Plan", "199"]
+  },
+  {
+    "id": "dental-10",
+    "type": "answerable",
+    "topic": "services",
+    "question": "Do you treat pediatric and child patients?",
+    "expected_keywords": ["pediatric", "child", "habit counseling"]
+  },
+  {
+    "id": "dental-11",
+    "type": "should_abstain",
+    "topic": "out_of_domain",
+    "question": "Do you offer automotive oil changes and tire replacement?",
+    "expected_keywords": []
+  },
+  {
+    "id": "dental-12",
+    "type": "should_abstain",
+    "topic": "out_of_domain",
+    "question": "Can I hire your team to cater my wedding reception?",
+    "expected_keywords": []
+  },
+  {
+    "id": "dental-13",
+    "type": "should_abstain",
+    "topic": "cross_tenant",
+    "question": "What is your hourly rate for AP Physics tutoring?",
+    "expected_keywords": []
+  },
+  {
+    "id": "dental-14",
+    "type": "should_abstain",
+    "topic": "cross_tenant",
+    "question": "What is your real estate commission on residential home sales?",
+    "expected_keywords": []
+  },
+  {
+    "id": "dental-15",
+    "type": "should_abstain",
+    "topic": "out_of_domain",
+    "question": "Do you manage maritime freight shipping containers?",
+    "expected_keywords": []
+  }
+]

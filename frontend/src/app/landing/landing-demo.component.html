@@ -1,82 +1,80 @@
 <div class="landing-page">
+  <!-- Top Demo Switcher & Navbar -->
   <header class="navbar">
     <div class="brand">
-      <span class="logo-badge">✦</span>
-      <h1>Bright Minds Coaching</h1>
+      <span class="logo-badge" [style.background-color]="currentConfig().brandColor">✦</span>
+      <div>
+        <h1 class="brand-name">{{ currentConfig().brandName }}</h1>
+        <span class="brand-tag-small">{{ currentConfig().brandTag }}</span>
+      </div>
     </div>
+
+    <!-- Vertical Demo Switcher -->
+    <div class="vertical-switcher">
+      <span class="switcher-lbl">Demo Verticals:</span>
+      <a routerLink="/demo/tutoring" routerLinkActive="active-vertical" [routerLinkActiveOptions]="{exact: false}" class="vertical-pill">🎓 Tutoring</a>
+      <a routerLink="/demo/dental" routerLinkActive="active-vertical" class="vertical-pill">🦷 Dental Clinic</a>
+      <a routerLink="/demo/realty" routerLinkActive="active-vertical" class="vertical-pill">🏙️ Realty Partners</a>
+    </div>
+
     <nav class="nav-links">
-      <a href="#courses">Courses</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#tutors">Tutors</a>
-      <a href="#faq">FAQ</a>
       <a routerLink="/dashboard" class="dashboard-nav-link" id="nav-owner-dashboard">Owner Portal 📊</a>
-      <button class="cta-btn" onclick="document.querySelector('.nml-launcher-btn')?.click()">Ask AI Assistant</button>
+      <button class="cta-btn" [style.background-color]="currentConfig().brandColor" onclick="document.querySelector('.nml-launcher-btn')?.click()">
+        Ask AI Assistant
+      </button>
     </nav>
   </header>
 
+  <!-- Hero Section -->
   <main class="hero-section">
     <div class="hero-content">
-      <div class="hero-tag">🌟 Grades 8–12 STEM Excellence</div>
-      <h2 class="hero-headline">Master Math, Physics & CS with Elite Mentors</h2>
+      <div class="hero-tag" [style.color]="currentConfig().brandColor" [style.background-color]="currentConfig().brandColor + '15'">
+        {{ currentConfig().brandTag }}
+      </div>
+      <h2 class="hero-headline">{{ currentConfig().headline }}</h2>
       <p class="hero-description">
-        Personalized 1-on-1 tutoring and small group coaching designed to build rock-solid fundamentals, boost test scores, and cultivate a deep love for problem solving.
+        {{ currentConfig().description }}
       </p>
 
       <div class="hero-actions">
-        <button class="primary-btn" onclick="document.querySelector('.nml-launcher-btn')?.click()">
-          Book 100% Free Trial Class
+        <button class="primary-btn" [style.background-color]="currentConfig().brandColor" onclick="document.querySelector('.nml-launcher-btn')?.click()">
+          {{ currentConfig().ctaText }}
         </button>
-        <a href="#pricing" class="secondary-btn">Explore Pricing ($35/hr)</a>
+        <button class="secondary-btn" onclick="document.querySelector('.nml-launcher-btn')?.click()">
+          {{ currentConfig().pricingText }}
+        </button>
       </div>
 
       <div class="stats-row">
-        <div class="stat-card">
-          <span class="stat-number">98%</span>
-          <span class="stat-label">Grade Improvement</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-number">6 : 1</span>
-          <span class="stat-label">Max Batch Size</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-number">5+ Yrs</span>
-          <span class="stat-label">Avg Tutor Experience</span>
-        </div>
+        @for (stat of currentConfig().stats; track stat.label) {
+          <div class="stat-card">
+            <span class="stat-number" [style.color]="currentConfig().brandColor">{{ stat.number }}</span>
+            <span class="stat-label">{{ stat.label }}</span>
+          </div>
+        }
       </div>
     </div>
   </main>
 
-  <section id="courses" class="features-section">
-    <h3>Courses & Programs</h3>
+  <!-- Features & Services Grid -->
+  <section class="features-section">
+    <h3>{{ currentConfig().featuresTitle }}</h3>
     <div class="feature-grid">
-      <div class="feature-card">
-        <div class="card-icon">📐</div>
-        <h4>High School Mathematics</h4>
-        <p>Algebra, Geometry, Pre-Calc, AP Calculus AB/BC, and SAT Math prep with stepwise concept breakdowns.</p>
-      </div>
-      <div class="feature-card">
-        <div class="card-icon">⚡</div>
-        <h4>Physics & Mechanics</h4>
-        <p>AP Physics 1 & C, Electromagnetism, and interactive simulations for conceptual mastery.</p>
-      </div>
-      <div class="feature-card">
-        <div class="card-icon">🧪</div>
-        <h4>Chemistry</h4>
-        <p>General, Honors, and AP Chemistry with dedicated stoichiometry and lab-concept coaching.</p>
-      </div>
-      <div class="feature-card">
-        <div class="card-icon">💻</div>
-        <h4>Computer Science</h4>
-        <p>Python foundations, Java, AP Computer Science A, and algorithm design basics.</p>
-      </div>
+      @for (item of currentConfig().features; track item.title) {
+        <div class="feature-card">
+          <div class="card-icon">{{ item.icon }}</div>
+          <h4>{{ item.title }}</h4>
+          <p>{{ item.desc }}</p>
+        </div>
+      }
     </div>
   </section>
 
-  <!-- Embed Chat Widget directly -->
+  <!-- Embed Chat Widget Dynamic Instance -->
   <nml-chat-widget
-    [businessId]="businessId()"
+    [businessId]="currentConfig().businessId"
     apiBaseUrl="http://localhost:5103"
-    brandColor="#4f46e5"
-    greeting="Hi! I'm the Bright Minds AI assistant. Ask me anything about our subjects, batch timings, trial classes, or fees!"
+    [brandColor]="currentConfig().brandColor"
+    [greeting]="currentConfig().greeting"
   ></nml-chat-widget>
 </div>

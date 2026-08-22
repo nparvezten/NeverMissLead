@@ -12,6 +12,11 @@ rag-service/__pycache__/
 rag-service/**/__pycache__/
 rag-service/.pytest_cache/
 
+# Frontend build & test output
+frontend/dist/
+frontend/test-results/
+frontend/.angular/
+
 # Environment secrets — NEVER commit
 # Real API keys (LLM_PROVIDER, OPENAI_API_KEY, etc.) go in appsettings.Local.json
 # which is loaded by ASP.NET Core but git-ignored by the lines below.
