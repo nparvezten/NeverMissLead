@@ -1,21 +1,30 @@
 # NeverMissLead — project-level .gitignore
 
+# Node & JavaScript dependencies
+node_modules/
+**/node_modules/
+frontend/dist/
+frontend/test-results/
+frontend/.angular/
+test-results/
+**/test-results/
+e2e/test-results/
+e2e/playwright-report/
+
 # .NET build output
 backend/bin/
 backend/obj/
 backend/**/bin/
 backend/**/obj/
 
-# Python virtual environment
-rag-service/.venv/
-rag-service/__pycache__/
-rag-service/**/__pycache__/
-rag-service/.pytest_cache/
-
-# Frontend build & test output
-frontend/dist/
-frontend/test-results/
-frontend/.angular/
+# Python virtual environment & cache
+.venv/
+**/.venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+**/.pytest_cache/
 
 # Environment secrets — NEVER commit
 # Real API keys (LLM_PROVIDER, OPENAI_API_KEY, etc.) go in appsettings.Local.json

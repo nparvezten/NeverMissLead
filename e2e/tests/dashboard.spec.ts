@@ -10,7 +10,7 @@ test.describe('NeverMissLead Owner Dashboard E2E', () => {
     await expect(loginCard).toBeVisible();
 
     // 3. Click demo credentials helper or fill inputs
-    const demoBtn = page.locator('#demo-creds-btn');
+    const demoBtn = page.locator('#demo-creds-tutoring');
     await expect(demoBtn).toBeVisible();
     await demoBtn.click();
 
