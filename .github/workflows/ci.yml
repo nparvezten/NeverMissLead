@@ -50,7 +50,8 @@ jobs:
           python -m venv .venv
           source .venv/bin/activate
           pip install --upgrade pip
-          pip install -r rag-service/requirements.txt
+          pip install --no-cache-dir --extra-index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+          pip install --no-cache-dir --extra-index-url https://download.pytorch.org/whl/cpu -r rag-service/requirements.txt
           pip install pytest pytest-asyncio bandit
 
       - name: Run Pytest Suite
@@ -94,7 +95,7 @@ jobs:
         image: pgvector/pgvector:pg16
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
+          POSTGRES_PASSWORD: postgres
           POSTGRES_DB: nevermisslead
         ports:
           - 5433:5432
@@ -123,31 +124,32 @@ jobs:
           python -m venv .venv
           source .venv/bin/activate
           pip install --upgrade pip
-          pip install -r rag-service/requirements.txt
+          pip install --no-cache-dir --extra-index-url https://download.pytorch.org/whl/cpu torch==2.6.0
+          pip install --no-cache-dir --extra-index-url https://download.pytorch.org/whl/cpu -r rag-service/requirements.txt
           pip install httpx sentence-transformers pyjwt psycopg2-binary
 
       - name: Start RAG Service (Background)
+        env:
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5433/nevermisslead"
+          EMBEDDING_PROVIDER: "local"
         run: |
           source .venv/bin/activate
           PYTHONPATH=rag-service uvicorn main:app --host 0.0.0.0 --port 8000 --app-dir rag-service &
-          sleep 3
+          sleep 4
 
       - name: Start .NET Web API (Background)
         env:
-          ConnectionStrings__DefaultConnection: "Host=localhost;Port=5433;Database=nevermisslead;Username=postgres;Password=password"
+          ConnectionStrings__DefaultConnection: "Host=localhost;Port=5433;Database=nevermisslead;Username=postgres;Password=postgres"
           RagService__BaseUrl: "http://localhost:8000"
           ASPNETCORE_ENVIRONMENT: "Development"
         run: |
           dotnet run --project backend/API/NeverMissLead.API.csproj --urls "http://localhost:5103" &
-          sleep 5
+          sleep 6
 
       - name: Seed Demo Knowledge Base Chunks
         env:
-          DB_HOST: "localhost"
-          DB_PORT: "5433"
-          DB_NAME: "nevermisslead"
-          DB_USER: "postgres"
-          DB_PASSWORD: "password"
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5433/nevermisslead"
+          EMBEDDING_PROVIDER: "local"
         run: |
           source .venv/bin/activate
           PYTHONPATH=rag-service python eval/seed_demo_data.py
