@@ -14,6 +14,13 @@ Visitors interact with an embeddable website widget, receive accurate answers gr
 
 ---
 
+## 🎯 Positioning
+
+RAG-grounded chat widgets for lead capture aren't a new category — commercial platforms like Botsonic, Heeya, and Landbot already serve this market well.
+**This repository isn't claiming to be a novel idea; it's a fully open, end-to-end reference implementation of that pattern**, built to show real engineering depth where most competitors are closed-source SaaS: a working multi-tenant architecture (not a marketing claim — see the live cross-tenant isolation tests), a published, re-runnable accuracy benchmark instead of a blog-post claim, a documented security audit trail, and a genuinely free-by-default AI layer that's config-swappable to a paid provider without a rebuild.
+
+If you're evaluating this as a learning resource, a portfolio reference, or a self-hosted starting point for your own vertical — that's exactly what it's for.
+
 ## 🏛️ Executive Summary & Key Architectural Highlights
 
 This repository serves as a **production-ready reference architecture** demonstrating modern system design, polyglot microservice orchestration, zero-cost developer experience, and enterprise security hygiene:
