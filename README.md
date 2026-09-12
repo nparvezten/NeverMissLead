@@ -6,10 +6,34 @@
 [![Angular 20+](https://img.shields.io/badge/Angular-20+-DD0031.svg)](https://angular.dev/)
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11+-3776AB.svg)](https://python.org/)
 [![PostgreSQL + pgvector](https://img.shields.io/badge/Postgres-pgvector-336791.svg)](https://github.com/pgvector/pgvector)
+[![Security: Bandit Clean](https://img.shields.io/badge/Security-Bandit_SAST_0_Issues-brightgreen.svg)](eval/latest_report.md)
 
-NeverMissLead is a **multi-tenant, citation-grounded RAG (Retrieval-Augmented Generation) lead capture and follow-up platform** for independent service businesses.
+NeverMissLead is a **multi-tenant, citation-grounded RAG (Retrieval-Augmented Generation) lead capture and follow-up platform** for independent service businesses (e.g., private coaching, dental clinics, real estate brokerages).
 
-Visitors ask questions in an embeddable website widget, receive accurate answers grounded directly in the business's own FAQ and pricing documents with verifiable source citations, and are automatically captured as qualified leads with scheduled follow-up sequences. When a visitor asks an out-of-scope or cross-tenant question, the assistant explicitly abstains and flags the conversation for owner handoff rather than hallucinating.
+Visitors interact with an embeddable website widget, receive accurate answers grounded directly in the business's own FAQ and pricing documents with verifiable source citations, and are captured as qualified leads with automated follow-up scheduling. When an out-of-scope or cross-tenant query occurs, the system deterministically abstains and initiates owner handoff rather than hallucinating.
+
+---
+
+## 🏛️ Executive Summary & Key Architectural Highlights
+
+This repository serves as a **production-ready reference architecture** demonstrating modern system design, polyglot microservice orchestration, zero-cost developer experience, and enterprise security hygiene:
+
+1. **Polyglot Clean Architecture**:
+   * **Core Platform (.NET 10 Web API)**: Clean Architecture with Domain-Driven Design (DDD), Native MIT CQRS (`IMediator`, `IRequest<T>`, `IRequestHandler<TReq, TResp>` with assembly scanning — zero commercial or paid runtime packages), FluentValidation, and RFC 7807 ProblemDetails.
+   * **RAG Microservice (Python 3.11+ FastAPI)**: Specialized AI service owning document tokenization, sliding-window chunking, vector embedding, and similarity search.
+   * **Frontend (Angular 20+ LTS)**: High-performance standalone components, Reactive Signals state management, and modern TailwindCSS styling across both visitor widget and owner dashboard.
+2. **Deterministic Grounding & Zero-Hallucination Guardrail**:
+   * Every AI response is strictly tied to verifiable `cited_chunk_ids`.
+   * Out-of-scope or ungrounded queries trigger immediate abstention and owner escalation (`needs_human = true`), backed by a 48-case benchmark suite achieving **100% accuracy and citation precision**.
+3. **Multi-Provider AI Strategy ($0 Cost Default)**:
+   * **Zero External Cost in Local/CI Mode**: Uses CPU-based `sentence-transformers` (`all-MiniLM-L6-v2`) and local stub generation out of the box — no credit cards, API keys, or cloud accounts needed to clone and run.
+   * **Hot-Swappable Hosted AI**: Config-driven provider factory (`LLM_PROVIDER`, `EMBEDDING_PROVIDER`) allows seamless switching to OpenAI, Anthropic Claude, or Google Gemini via environment variables with zero code rebuilds.
+4. **Boring, Defensible Infrastructure**:
+   * Utilizes **PostgreSQL 16 with native `pgvector`** for relational data and cosine distance vector search (`<=>`), avoiding costly standalone vector databases.
+5. **Data Protection & Multi-Tenant Isolation**:
+   * Cryptographic password hashing (ASP.NET Core PBKDF2 with HMAC-SHA512, 100,000 iterations, 128-bit salt).
+   * AES-256-CBC field encryption with HMAC-SHA256 for lead PII (`name`, `phone`, `email`).
+   * Dynamic Origin CORS validation and per-endpoint rate limiting for public widget access.
 
 ---
 
@@ -48,21 +72,30 @@ See [`eval/latest_report.md`](eval/latest_report.md) for full question-by-questi
 | **Bright Smile Dental Clinic** *(Dental)* | 15 | 100.0% | 100.0% | 100.0% | **100.0%** | ✅ PASS |
 | **Skyline Realty Partners** *(Realty)* | 15 | 100.0% | 100.0% | 100.0% | **100.0%** | ✅ PASS |
 
-### Test Suite Verification Matrix
+---
+
+## 🧪 Comprehensive Verification Matrix
 
 ```text
 ├── xUnit (.NET 10 Backend)     :  45 / 45 Passing  (Clean Architecture, Native CQRS, PBKDF2, Dynamic CORS, Tenant Isolation)
 ├── Pytest (Python RAG Service) :  22 / 22 Passing  (Recursive chunking, cosine retrieval, Fake/Local providers)
-├── Playwright (E2E Browser)    :   4 /  4 Passing  (Widget Q&A, Citation chips, Lead capture form, Owner dashboard)
-├── Bandit (Python SAST)        :   0 Issues (0 High, 0 Medium, 0 Low)
-└── Full Verification Pipeline  :   6 /  6 Stages Green (./run-pipeline.sh)
+├── Playwright (E2E Browser)    :  10 / 10 Passing  (Widget Q&A, Citation chips, Lead capture form, 3 vertical demos)
+├── Vitest (Angular Unit)       :   1 /  1 Passing  (Standalone router & core components)
+├── Bandit (Python SAST)        :   0 Issues        (Zero High, Medium, or Low security vulnerabilities)
+└── Full Verification Pipeline  :   6 /  6 Stages   (Automated run-pipeline.sh & GitHub Actions CI)
 ```
 
 ---
 
-## 🏛️ System Architecture
+## 📐 System Architecture & Workflow Diagrams
 
-NeverMissLead is architected as four loosely-coupled, containerized components with tenant-isolated vector retrieval:
+Explore the comprehensive vector diagrams in [`docs/diagram/`](docs/diagram/):
+
+* [**System Architecture**](docs/diagram/system_architecture.svg): Polyglot .NET + FastAPI + PostgreSQL + Angular topology.
+* [**Database Entity-Relationship (ERD)**](docs/diagram/database_erd.svg): Relational schema and pgvector storage.
+* [**Knowledge Ingestion Workflow**](docs/diagram/ingestion_flow.svg): Document chunking and embedding pipeline.
+* [**Chat & Grounded RAG Flow**](docs/diagram/chat_rag_flow.svg): Public widget Q&A, citation resolution, and abstention routing.
+* [**Lead Capture & Follow-Up Flow**](docs/diagram/lead_followup_flow.svg): Intent classification, AES-256 PII encryption, and `IHostedService` background polling.
 
 ```mermaid
 flowchart TB
@@ -123,7 +156,7 @@ flowchart TB
 
 ## ⚡ Quickstart Guide
 
-### Method 1: Docker Compose (Recommended)
+### Method 1: Docker Compose (All Services Containerized)
 
 ```bash
 git clone https://github.com/nparvezten/NeverMissLead.git
@@ -131,17 +164,45 @@ cd NeverMissLead
 docker compose up --build
 ```
 
-- **Demo Landing Pages:** `http://localhost:4200/demo/tutoring`, `http://localhost:4200/demo/dental`, `http://localhost:4200/demo/realty`
-- **Owner Dashboard:** `http://localhost:4200/dashboard`
-- **.NET 10 API:** `http://localhost:5103` (`/swagger` or `/health`)
-- **FastAPI RAG Service:** `http://localhost:8000` (`/docs`)
+* **Demo Landing Pages:**
+  * STEM Tutoring: [`http://localhost:4200/demo/tutoring`](http://localhost:4200/demo/tutoring)
+  * Dental Clinic: [`http://localhost:4200/demo/dental`](http://localhost:4200/demo/dental)
+  * Real Estate: [`http://localhost:4200/demo/realty`](http://localhost:4200/demo/realty)
+* **Owner Dashboard:** [`http://localhost:4200/dashboard`](http://localhost:4200/dashboard) (or [`/login`](http://localhost:4200/login))
+* **.NET 10 API:** [`http://localhost:5103/health`](http://localhost:5103/health) (Swagger: [`http://localhost:5103/swagger`](http://localhost:5103/swagger))
+* **FastAPI RAG Service:** [`http://localhost:8000/docs`](http://localhost:8000/docs)
+
+### Method 2: Local Developer Mode
+
+```bash
+# 1. Start PostgreSQL with pgvector
+docker compose up -d postgres
+
+# 2. Start .NET API
+dotnet run --project backend/API/NeverMissLead.API.csproj --urls "http://localhost:5103"
+
+# 3. Start Python RAG Service
+cd rag-service
+source .venv/bin/activate
+uvicorn main:app --host 0.0.0.0 --port 8000 --app-dir .
+
+# 4. Start Angular Frontend
+cd ../frontend
+npm start -- --port 4200
+```
+
+### Method 3: Automated Verification Pipeline
+
+```bash
+./run-pipeline.sh
+```
 
 ---
 
-## 🛡️ Security & Multi-Tenant Isolation
+## 🛡️ Security & Privacy Guardrails
 
-1. **Cryptographic Password Hashing**: Owner passwords use ASP.NET Core built-in PBKDF2 (`HMAC-SHA512`, 100,000 iterations, 128-bit cryptographically secure salt, and constant-time equality check).
-2. **AES-256 Field Encryption**: Lead PII (`name`, `phone`, `email`) is encrypted at rest using AES-256-CBC with HMAC-SHA256 authenticated integrity.
+1. **Cryptographic Password Hashing**: Owner credentials use ASP.NET Core PBKDF2 (`HMAC-SHA512`, 100,000 iterations, 128-bit cryptographically secure salt, and constant-time equality check).
+2. **AES-256 Field Encryption**: Lead PII (`name`, `phone`, `email`) is encrypted at rest using AES-256-CBC with HMAC-SHA256 authenticated integrity. Raw PII is never logged.
 3. **Multi-Tenant Scoping**: All database reads, vector distance searches, lead queries, and conversation logs enforce `WHERE business_id = currentTenantId` at the database and vector layer.
 4. **Dynamic CORS Enforcement**: Public widget requests validate the `Origin` header against the registered business's allowlist stored in PostgreSQL.
 5. **Rate Limiting**: Public chat widget (`200 req/min dev`, `30 req/min prod`) and login endpoints (`5 req/min`) prevent brute-force attacks and abuse.
